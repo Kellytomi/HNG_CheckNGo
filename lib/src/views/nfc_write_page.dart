@@ -22,6 +22,13 @@ class NFCWritePage extends StatelessWidget {
             children: [
               const CircleAvatar(radius: 70.0),
               const SizedBox(height: 10.0),
+              TextField(
+                controller: visitorIdController,
+                decoration: const InputDecoration(
+                  labelText: 'Visitor ID',
+                ),
+              ),
+              const SizedBox(height: 10.0),
               ElevatedButton(
                 onPressed: () async {
                   if (visitorIdController.text.isNotEmpty) {
@@ -36,7 +43,7 @@ class NFCWritePage extends StatelessWidget {
                     );
                   }
                 },
-                child: const Text('Scan to Write to NFC'),
+                child: const Text('Write to NFC'),
               ),
             ],
           ),
