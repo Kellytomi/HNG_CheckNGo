@@ -1,5 +1,4 @@
 import 'package:checkngo/src/services/admin_service.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -84,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                       password: _passwordController.text,
                     )
                         .then((value) {
-                      Navigator.pushReplacementNamed(context, '/dashboard');
+                      Navigator.pushReplacementNamed(context, '/home');
                     }).onError((error, stackTrace) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -95,7 +94,6 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     });
                     if (!context.mounted) return;
-                    Navigator.pushReplacementNamed(context, '/dashboard');
                   } catch (_) {
                     // TODO: error handling
                   }
