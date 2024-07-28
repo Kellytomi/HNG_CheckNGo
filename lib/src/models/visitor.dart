@@ -6,28 +6,14 @@ class Visitor {
   final String phone;
   final String email;
   final DateTime createdAt;
-  const Visitor(
-      {required this.id,
-      required this.fullname,
-      required this.phone,
-      required this.email,
-      required this.createdAt});
 
-  Visitor copyWith({
-    String? id,
-    String? fullname,
-    String? phone,
-    String? email,
-    DateTime? createdAt,
-  }) {
-    return Visitor(
-      id: id ?? this.id,
-      fullname: fullname ?? this.fullname,
-      phone: phone ?? this.phone,
-      email: email ?? this.email,
-      createdAt: createdAt ?? this.createdAt,
-    );
-  }
+  const Visitor({
+    required this.id,
+    required this.fullname,
+    required this.phone,
+    required this.email,
+    required this.createdAt,
+  });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

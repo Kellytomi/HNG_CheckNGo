@@ -10,18 +10,6 @@ class Admin {
     required this.orgName,
   });
 
-  Admin copyWith({
-    String? id,
-    String? email,
-    String? orgName,
-  }) {
-    return Admin(
-      id: id ?? this.id,
-      email: email ?? this.email,
-      orgName: orgName ?? this.orgName,
-    );
-  }
-
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,

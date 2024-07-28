@@ -23,23 +23,26 @@ class ManageVisitorsPage extends StatelessWidget {
               ConnectionState.done when snapshot.hasError => const Center(
                   child: Text('An error occurred'),
                 ),
-              ConnectionState.done when snapshot.hasData => ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (_, i) {
-                    final visitor = snapshot.data![i];
-                    return ListTile(
-                      title: Text(visitor.fullname),
-                      subtitle: Text(visitor.email),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {
-                        Navigator.of(context).pushNamed(
-                          '/nfc-read',
-                          arguments: visitor,
-                        );
-                      },
-                    );
-                  },
-                ),
+              ConnectionState.done when snapshot.hasData =>
+                snapshot.data!.isEmpty
+                    ? Center(child: Text('No visitors yet'))
+                    : ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (_, i) {
+                          final visitor = snapshot.data![i];
+                          return ListTile(
+                            title: Text(visitor.fullname),
+                            subtitle: Text(visitor.email),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                '/nfc-read',
+                                arguments: visitor,
+                              );
+                            },
+                          );
+                        },
+                      ),
               _ => const SizedBox(),
             };
           },
