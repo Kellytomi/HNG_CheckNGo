@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:checkngo/src/services/nfc_service.dart';
-import '../models/visitor.dart';
+import 'package:provider/provider.dart';
 
 class NFCReadPage extends StatefulWidget {
-  const NFCReadPage({super.key, required this.visitor});
-  final Visitor visitor;
+  const NFCReadPage({super.key});
 
   @override
-  _NFCReadPageState createState() => _NFCReadPageState();
+  State<NFCReadPage> createState() => _NFCReadPageState();
 }
 
 class _NFCReadPageState extends State<NFCReadPage> {
@@ -24,21 +22,26 @@ class _NFCReadPageState extends State<NFCReadPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text('Scanned Data: $_nfcData'),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                await nfcService.readTag((data) {
-                  setState(() {
-                    _nfcData = data;
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Scanned Data: $_nfcData'),
+              const SizedBox(height: 20),
+              const CircleAvatar(radius: 70.0),
+              const SizedBox(height: 10.0),
+              ElevatedButton(
+                onPressed: () async {
+                  await nfcService.readTag((data) {
+                    setState(() {
+                      _nfcData = data;
+                    });
                   });
-                });
-              },
-              child: const Text('Scan NFC Tag'),
-            ),
-          ],
+                },
+                child: const Text('Scan NFC'),
+              ),
+            ],
+          ),
         ),
       ),
     );
