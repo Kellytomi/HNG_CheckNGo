@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:checkngo/src/services/nfc_service.dart';
 
-class NFCWritePage extends StatelessWidget {
-  const NFCWritePage({super.key});
+import '../services/visitors_service.dart';
+
+class CheckOutPage extends StatelessWidget {
+  const CheckOutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final nfcService = Provider.of<NFCService>(context, listen: false);
-    final visitorIdController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Write to NFC'),
+        title: const Text('Check Out'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -24,19 +23,22 @@ class NFCWritePage extends StatelessWidget {
               const SizedBox(height: 10.0),
               ElevatedButton(
                 onPressed: () async {
-                  if (visitorIdController.text.isNotEmpty) {
-                    await nfcService.writeTag(visitorIdController.text);
+                  try {
+                    final controller = context.read<VisitorsService>();
+                    await controller.checkOut();
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Visitor ID written to NFC tag')),
+                      const SnackBar(
+                          content: Text('Visitor checked out successfully')),
                     );
-                  } else {
+                  } catch (_) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please enter a Visitor ID')),
+                      const SnackBar(
+                          content: Text('Error occurred while checking out')),
                     );
                   }
                 },
-                child: const Text('Scan to Write to NFC'),
+                child: const Text('Scan NFC to check out'),
               ),
             ],
           ),

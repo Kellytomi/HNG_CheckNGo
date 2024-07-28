@@ -1,6 +1,6 @@
-import 'package:checkngo/src/views/create_visitor_page.dart';
+import 'package:checkngo/src/views/check_in_page.dart';
 import 'package:checkngo/src/views/visitors_logs_page.dart';
-import 'package:checkngo/src/views/nfc_read_page.dart';
+import 'package:checkngo/src/views/check_out_page.dart';
 import 'package:checkngo/src/views/widgets/custom_navbar.dart';
 import 'package:checkngo/src/views/widgets/nav_item.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-const _pages = [NFCReadPage(), CreateVisitorPage(), VisitorsLogsPage()];
+const _pages = [CheckOutPage(), CheckInPage(), VisitorsLogsPage()];
 
 class _HomePageState extends State<HomePage> {
   var _currentIndex = 0;

@@ -33,11 +33,11 @@ class VisitorsLogsPage extends StatelessWidget {
                           final visitor = snapshot.data![i];
                           return ListTile(
                             title: Text(visitor.fullname),
-                            subtitle: Text(visitor.email),
+                            subtitle: Text(visitor.phone),
                             trailing: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                const Text('Checked in'),
+                                Text('Checked ${visitor.status.name}'),
                                 Text(
                                   DateFormat('MMMM dd, yyyy, mm:ss')
                                       .format(DateTime.now())

@@ -1,37 +1,53 @@
 import 'dart:convert';
 
 class Visitor {
-  final String id;
   final String fullname;
   final String phone;
-  final String email;
-  final DateTime createdAt;
+  final String? email;
+  final VisitorStatus status;
+  final DateTime checkedAt;
 
   const Visitor({
-    required this.id,
     required this.fullname,
     required this.phone,
     required this.email,
-    required this.createdAt,
+    required this.status,
+    required this.checkedAt,
   });
+
+  Visitor copyWith({
+    String? fullname,
+    String? phone,
+    String? email,
+    VisitorStatus? status,
+    DateTime? checkedAt,
+  }) {
+    return Visitor(
+      fullname: fullname ?? this.fullname,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
+      status: status ?? this.status,
+      checkedAt: checkedAt ?? this.checkedAt,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'fullname': fullname,
       'phone': phone,
       'email': email,
-      'createdAt': createdAt,
+      'status': status.name,
+      'checkedAt': checkedAt.toIso8601String(),
     };
   }
 
   factory Visitor.fromMap(Map<String, dynamic> map) {
     return Visitor(
-      id: map['id'] as String,
       fullname: map['fullname'] as String,
       phone: map['phone'] as String,
       email: map['email'] as String,
-      createdAt: DateTime.tryParse(map['createdAt'] as String)!,
+      status: VisitorStatus.fromString(map['status'] as String),
+      checkedAt: DateTime.tryParse(map['checkedAt'] as String)!,
     );
   }
 
@@ -42,26 +58,34 @@ class Visitor {
 
   @override
   String toString() {
-    return 'Customer(id: $id, fullname: $fullname, phone: $phone, email: $email, createdAt: $createdAt)';
+    return 'Customer(fullname: $fullname, phone: $phone, email: $email, status: $status, checkedAt: $checkedAt)';
   }
 
   @override
   bool operator ==(covariant Visitor other) {
     if (identical(this, other)) return true;
 
-    return other.id == id &&
-        other.fullname == fullname &&
-        other.phone == phone &&
-        other.email == email &&
-        other.createdAt == createdAt;
+    return other.phone == phone;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
-        fullname.hashCode ^
-        phone.hashCode ^
-        email.hashCode ^
-        createdAt.hashCode;
+    return phone.hashCode;
+  }
+}
+
+enum VisitorStatus {
+  checkIn('in'),
+  checkOut('out'),
+  none('');
+
+  final String name;
+  const VisitorStatus(this.name);
+
+  factory VisitorStatus.fromString(String data) {
+    return VisitorStatus.values.firstWhere(
+      (val) => val.name.toLowerCase() == data.toLowerCase(),
+      orElse: () => VisitorStatus.none,
+    );
   }
 }

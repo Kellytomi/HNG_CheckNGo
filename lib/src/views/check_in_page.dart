@@ -2,14 +2,14 @@ import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CreateVisitorPage extends StatefulWidget {
-  const CreateVisitorPage({super.key});
+class CheckInPage extends StatefulWidget {
+  const CheckInPage({super.key});
 
   @override
-  State<CreateVisitorPage> createState() => _CreateVisitorPageState();
+  State<CheckInPage> createState() => _CheckInPageState();
 }
 
-class _CreateVisitorPageState extends State<CreateVisitorPage> {
+class _CheckInPageState extends State<CheckInPage> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _nameController;
@@ -35,7 +35,7 @@ class _CreateVisitorPageState extends State<CreateVisitorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Visitor')),
+      appBar: AppBar(title: const Text('Check In')),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
         child: Form(
@@ -45,7 +45,7 @@ class _CreateVisitorPageState extends State<CreateVisitorPage> {
               TextFormField(
                 controller: _nameController,
                 keyboardType: TextInputType.name,
-                decoration: const InputDecoration(labelText: 'Fullname'),
+                decoration: const InputDecoration(labelText: 'Full Name'),
                 validator: (val) {
                   if (val == null || val.isEmpty) {
                     return 'Please enter a valid name';
@@ -65,18 +65,18 @@ class _CreateVisitorPageState extends State<CreateVisitorPage> {
                   return null;
                 },
               ),
-              const SizedBox(height: 10.0),
-              TextFormField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (val) {
-                  if (val == null || val.isEmpty) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
-              ),
+              // const SizedBox(height: 10.0),
+              // TextFormField(
+              //   controller: _emailController,
+              //   keyboardType: TextInputType.emailAddress,
+              //   decoration: const InputDecoration(labelText: 'Email'),
+              //   validator: (val) {
+              //     if (val == null || val.isEmpty) {
+              //       return 'Please enter a valid email';
+              //     }
+              //     return null;
+              //   },
+              // ),
               const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () async {
@@ -85,18 +85,24 @@ class _CreateVisitorPageState extends State<CreateVisitorPage> {
 
                   try {
                     final controller = context.read<VisitorsService>();
-                    await controller.createVisitor(
+                    await controller.checkIn(
                       name: _nameController.text,
                       phone: _phoneController.text,
                       email: _emailController.text,
                     );
                     if (!context.mounted) return;
-                    Navigator.pushNamed(context, '/nfc-write');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Visitor checked in successfully')),
+                    );
                   } catch (_) {
-                    // TODO: error handling
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Error occurred while checking in')),
+                    );
                   }
                 },
-                child: const Text('Create Visitor'),
+                child: const Text('Scan NFC to check in'),
               ),
             ],
           ),
