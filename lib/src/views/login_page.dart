@@ -1,4 +1,5 @@
 import 'package:checkngo/src/services/admin_service.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -77,12 +78,24 @@ class _LoginPageState extends State<LoginPage> {
 
                   try {
                     final controller = context.read<AdminService>();
-                    await controller.login(
+                    await controller
+                        .login(
                       email: _emailController.text,
                       password: _passwordController.text,
-                    );
+                    )
+                        .then((value) {
+                      Navigator.pushReplacementNamed(context, '/dashboard');
+                    }).onError((error, stackTrace) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Error: $error"),
+                          behavior: SnackBarBehavior.floating,
+                          duration: Duration(seconds: 6),
+                        ),
+                      );
+                    });
                     if (!context.mounted) return;
-                    Navigator.pushReplacementNamed(context, '/home');
+                    Navigator.pushReplacementNamed(context, '/dashboard');
                   } catch (_) {
                     // TODO: error handling
                   }

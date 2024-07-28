@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "499525742819",
+    "project_id": "checkngo-66264",
+    "storage_bucket": "checkngo-66264.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499525742819:android:33f9ad47f0133700d3d5d6",
+        "android_client_info": {
+          "package_name": "com.example.checkngo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFdFN2IMP8lZeiMQxRonbC1Jda9V9S5nw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
