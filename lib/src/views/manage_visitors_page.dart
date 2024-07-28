@@ -25,7 +25,7 @@ class ManageVisitorsPage extends StatelessWidget {
                 ),
               ConnectionState.done when snapshot.hasData =>
                 snapshot.data!.isEmpty
-                    ? Center(child: Text('No visitors yet'))
+                    ? const Center(child: Text('No visitors yet'))
                     : ListView.builder(
                         itemCount: snapshot.data!.length,
                         itemBuilder: (_, i) {

@@ -1,5 +1,6 @@
 import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/services/admin_service.dart';
+import 'package:checkngo/src/services/nfc_service.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:checkngo/src/views/create_visitor_page.dart';
 import 'package:checkngo/src/views/dashboard_page.dart';
@@ -28,6 +29,9 @@ class MainApp extends StatelessWidget {
         Provider<AdminService>(
           create: (_) => AdminService(),
         ),
+        Provider<NFCService>(
+          create: (_) => NFCService(),
+        ),
       ],
       child: MaterialApp(
         home: const LoginPage(),
@@ -47,3 +51,4 @@ class MainApp extends StatelessWidget {
     );
   }
 }
+
