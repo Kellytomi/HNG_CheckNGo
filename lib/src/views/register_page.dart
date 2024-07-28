@@ -94,13 +94,24 @@ class _RegisterPageState extends State<RegisterPage> {
                   if (!validated) return;
                   try {
                     final controller = context.read<AdminService>();
-                    await controller.register(
+                    await controller
+                        .register(
                       name: _nameController.text,
                       email: _emailController.text,
                       password: _passwordController.text,
-                    );
+                    )
+                        .then((value) {
+                      Navigator.pushReplacementNamed(context, '/home');
+                    }).onError((error, stackTrace) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Error: $error"),
+                          behavior: SnackBarBehavior.floating,
+                          duration: Duration(seconds: 6),
+                        ),
+                      );
+                    });
                     if (!context.mounted) return;
-                    Navigator.pushReplacementNamed(context, '/home');
                   } catch (_) {
                     // TODO: error handling
                   }
