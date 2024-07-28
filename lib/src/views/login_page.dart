@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                       password: _passwordController.text,
                     );
                     if (!context.mounted) return;
-                    Navigator.pushReplacementNamed(context, '/dashboard');
+                    Navigator.pushReplacementNamed(context, '/home');
                   } catch (_) {
                     // TODO: error handling
                   }

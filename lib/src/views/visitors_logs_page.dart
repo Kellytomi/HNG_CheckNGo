@@ -1,16 +1,17 @@
 import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class ManageVisitorsPage extends StatelessWidget {
-  const ManageVisitorsPage({super.key});
+class VisitorsLogsPage extends StatelessWidget {
+  const VisitorsLogsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<VisitorsService>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Manage Visitors')),
+      appBar: AppBar(title: const Text('Visitors Logs')),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
         child: StreamBuilder(
@@ -33,13 +34,17 @@ class ManageVisitorsPage extends StatelessWidget {
                           return ListTile(
                             title: Text(visitor.fullname),
                             subtitle: Text(visitor.email),
-                            trailing: const Icon(Icons.chevron_right),
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                '/nfc-read',
-                                arguments: visitor,
-                              );
-                            },
+                            trailing: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                const Text('Checked in'),
+                                Text(
+                                  DateFormat('MMMM dd, yyyy, mm:ss')
+                                      .format(DateTime.now())
+                                      .toString(),
+                                ),
+                              ],
+                            ),
                           );
                         },
                       ),

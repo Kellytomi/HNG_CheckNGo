@@ -16,29 +16,30 @@ class NFCWritePage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: visitorIdController,
-              decoration: InputDecoration(labelText: 'Visitor ID'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                if (visitorIdController.text.isNotEmpty) {
-                  await nfcService.writeTag(visitorIdController.text);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Visitor ID written to NFC tag')),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Please enter a Visitor ID')),
-                  );
-                }
-              },
-              child: const Text('Write to NFC'),
-            ),
-          ],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CircleAvatar(radius: 70.0),
+              const SizedBox(height: 10.0),
+              ElevatedButton(
+                onPressed: () async {
+                  if (visitorIdController.text.isNotEmpty) {
+                    await nfcService.writeTag(visitorIdController.text);
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Visitor ID written to NFC tag')),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please enter a Visitor ID')),
+                    );
+                  }
+                },
+                child: const Text('Scan to Write to NFC'),
+              ),
+            ],
+          ),
         ),
       ),
     );

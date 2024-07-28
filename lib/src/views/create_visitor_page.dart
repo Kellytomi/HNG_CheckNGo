@@ -91,7 +91,7 @@ class _CreateVisitorPageState extends State<CreateVisitorPage> {
                       email: _emailController.text,
                     );
                     if (!context.mounted) return;
-                    Navigator.pushReplacementNamed(context, '/manage-visitor');
+                    Navigator.pushNamed(context, '/nfc-write');
                   } catch (_) {
                     // TODO: error handling
                   }

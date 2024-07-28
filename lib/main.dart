@@ -1,11 +1,10 @@
-import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/services/admin_service.dart';
 import 'package:checkngo/src/services/nfc_service.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:checkngo/src/views/create_visitor_page.dart';
-import 'package:checkngo/src/views/dashboard_page.dart';
+import 'package:checkngo/src/views/home_page.dart';
 import 'package:checkngo/src/views/login_page.dart';
-import 'package:checkngo/src/views/manage_visitors_page.dart';
+import 'package:checkngo/src/views/visitors_logs_page.dart';
 import 'package:checkngo/src/views/nfc_read_page.dart';
 import 'package:checkngo/src/views/nfc_write_page.dart';
 import 'package:checkngo/src/views/register_page.dart';
@@ -38,14 +37,11 @@ class MainApp extends StatelessWidget {
         routes: {
           '/login': (_) => const LoginPage(),
           '/register': (_) => const RegisterPage(),
-          '/dashboard': (_) => const DashboardPage(),
+          '/home': (_) => const HomePage(),
           '/nfc-write': (_) => const NFCWritePage(),
-          '/nfc-read': (ctx) {
-            final visitor = ModalRoute.of(ctx)!.settings.arguments as Visitor;
-            return NFCReadPage(visitor: visitor);
-          },
+          '/nfc-read': (_) => const NFCReadPage(),
           '/create-visitor': (_) => const CreateVisitorPage(),
-          '/manage-visitor': (_) => const ManageVisitorsPage(),
+          '/manage-visitor': (_) => const VisitorsLogsPage(),
         },
       ),
     );
