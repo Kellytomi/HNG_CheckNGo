@@ -1,16 +1,21 @@
 import 'package:checkngo/src/models/visitor.dart';
+import 'package:checkngo/src/services/admin_service.dart';
 import 'package:checkngo/src/services/nfc_service.dart';
 
 class VisitorsService {
+  final AdminService adminService;
   final NFCService nfcService;
-  VisitorsService(this.nfcService);
+  const VisitorsService({required this.adminService, required this.nfcService});
 
   Future<void> checkIn({
     required String name,
     required String phone,
     required String? email,
   }) async {
+    final admin = await adminService.getAdmin();
+
     final visitor = Visitor(
+      adminID: admin.email,
       fullname: name,
       phone: phone,
       email: email,
@@ -54,6 +59,7 @@ class VisitorsService {
 
 final _mockVisitors = [
   Visitor(
+    adminID: 'admin@gmail.com',
     fullname: 'asf ba',
     phone: '+234543453245',
     email: 'a@a.com',
@@ -61,6 +67,7 @@ final _mockVisitors = [
     checkedAt: DateTime.now(),
   ),
   Visitor(
+    adminID: 'admin@gmail.com',
     fullname: 'Qasf ba',
     phone: '+234653445',
     email: 'a@b.com',
@@ -68,6 +75,7 @@ final _mockVisitors = [
     checkedAt: DateTime.now(),
   ),
   Visitor(
+    adminID: 'admin@gmail.com',
     fullname: 'Qasf ba',
     phone: '+234653445',
     email: 'a@b.com',
@@ -75,6 +83,7 @@ final _mockVisitors = [
     checkedAt: DateTime.now(),
   ),
   Visitor(
+    adminID: 'admin@gmail.com',
     fullname: 'asf ba',
     phone: '+234543453245',
     email: 'a@a.com',
@@ -82,6 +91,7 @@ final _mockVisitors = [
     checkedAt: DateTime.now(),
   ),
   Visitor(
+    adminID: 'admin@gmail.com',
     fullname: 'Bbas ba',
     phone: '+23494349053',
     email: 'a@d.com',
@@ -89,6 +99,7 @@ final _mockVisitors = [
     checkedAt: DateTime.now(),
   ),
   Visitor(
+    adminID: 'admin@gmail.com',
     fullname: 'Bbas ba',
     phone: '+23494349053',
     email: 'a@d.com',

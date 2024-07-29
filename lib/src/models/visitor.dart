@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class Visitor {
+  final String adminID;
   final String fullname;
   final String phone;
   final String? email;
@@ -8,6 +9,7 @@ class Visitor {
   final DateTime checkedAt;
 
   const Visitor({
+    required this.adminID,
     required this.fullname,
     required this.phone,
     required this.email,
@@ -16,6 +18,7 @@ class Visitor {
   });
 
   Visitor copyWith({
+    String? adminID,
     String? fullname,
     String? phone,
     String? email,
@@ -23,6 +26,7 @@ class Visitor {
     DateTime? checkedAt,
   }) {
     return Visitor(
+      adminID: adminID ?? this.adminID,
       fullname: fullname ?? this.fullname,
       phone: phone ?? this.phone,
       email: email ?? this.email,
@@ -33,6 +37,7 @@ class Visitor {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'adminID': adminID,
       'fullname': fullname,
       'phone': phone,
       'email': email,
@@ -43,6 +48,7 @@ class Visitor {
 
   factory Visitor.fromMap(Map<String, dynamic> map) {
     return Visitor(
+      adminID: map['adminID'] as String,
       fullname: map['fullname'] as String,
       phone: map['phone'] as String,
       email: map['email'] as String,
@@ -58,7 +64,7 @@ class Visitor {
 
   @override
   String toString() {
-    return 'Customer(fullname: $fullname, phone: $phone, email: $email, status: $status, checkedAt: $checkedAt)';
+    return 'Customer(adminID: $adminID, fullname: $fullname, phone: $phone, email: $email, status: $status, checkedAt: $checkedAt)';
   }
 
   @override

@@ -107,7 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         SnackBar(
                           content: Text("Error: $error"),
                           behavior: SnackBarBehavior.floating,
-                          duration: Duration(seconds: 6),
+                          duration: const Duration(seconds: 6),
                         ),
                       );
                     });

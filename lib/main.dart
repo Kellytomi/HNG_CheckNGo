@@ -27,14 +27,17 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<VisitorsService>(
-          create: (_) => VisitorsService(NFCService()),
-        ),
-        Provider<AdminService>(
-          create: (_) => AdminService(),
-        ),
-        Provider<NFCService>(
-          create: (_) => NFCService(),
+        Provider<NFCService>(create: (_) => NFCService()),
+
+        Provider<AdminService>(create: (_) => AdminService()),
+
+        ProxyProvider2<AdminService, NFCService, VisitorsService>(
+          update: (_, adminService, nfcService, __) {
+            return VisitorsService(
+              adminService: adminService,
+              nfcService: nfcService,
+            );
+          },
         ),
       ],
       child: MaterialApp(
