@@ -1,6 +1,7 @@
 import 'package:checkngo/src/services/admin_service.dart';
 import 'package:checkngo/src/services/nfc_service.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
+import 'package:checkngo/src/views/auth_state.dart';
 import 'package:checkngo/src/views/check_in_page.dart';
 import 'package:checkngo/src/views/home_page.dart';
 import 'package:checkngo/src/views/login_page.dart';
@@ -41,11 +42,12 @@ class MainApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        home: const LoginPage(),
+        home: const AuthState(),
         routes: {
           '/login': (_) => const LoginPage(),
           '/register': (_) => const RegisterPage(),
           '/home': (_) => const HomePage(),
+          '/auth': (_) => const AuthState(),
           '/nfc-read': (_) => const CheckOutPage(),
           '/create-visitor': (_) => const CheckInPage(),
           '/manage-visitor': (_) => const VisitorsLogsPage(),

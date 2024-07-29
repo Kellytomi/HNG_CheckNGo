@@ -22,6 +22,8 @@ class AdminService {
   Future<Admin> getAdmin() async {
     // use the current logged in user to fetch and return the admin
     // replace the mock admin with the admin fetchec
+    final admin = FirebaseAuth.instance.currentUser;
+    final email = admin?.email;
     return const Admin(id: '08034554326', email: 'admin@gmail.com', orgName: 'Admin');
   }
 }
