@@ -1,12 +1,11 @@
 import 'package:checkngo/src/services/admin_service.dart';
 import 'package:checkngo/src/services/nfc_service.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
-import 'package:checkngo/src/views/create_visitor_page.dart';
+import 'package:checkngo/src/views/check_in_page.dart';
 import 'package:checkngo/src/views/home_page.dart';
 import 'package:checkngo/src/views/login_page.dart';
 import 'package:checkngo/src/views/visitors_logs_page.dart';
-import 'package:checkngo/src/views/nfc_read_page.dart';
-import 'package:checkngo/src/views/nfc_write_page.dart';
+import 'package:checkngo/src/views/check_out_page.dart';
 import 'package:checkngo/src/views/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +28,7 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<VisitorsService>(
-          create: (_) => VisitorsService(),
+          create: (_) => VisitorsService(NFCService()),
         ),
         Provider<AdminService>(
           create: (_) => AdminService(),
@@ -44,9 +43,8 @@ class MainApp extends StatelessWidget {
           '/login': (_) => const LoginPage(),
           '/register': (_) => const RegisterPage(),
           '/home': (_) => const HomePage(),
-          '/nfc-write': (_) => const NFCWritePage(),
-          '/nfc-read': (_) => const NFCReadPage(),
-          '/create-visitor': (_) => const CreateVisitorPage(),
+          '/nfc-read': (_) => const CheckOutPage(),
+          '/create-visitor': (_) => const CheckInPage(),
           '/manage-visitor': (_) => const VisitorsLogsPage(),
         },
       ),
