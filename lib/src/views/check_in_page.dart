@@ -15,6 +15,7 @@ class _CheckInPageState extends State<CheckInPage> {
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -65,44 +66,55 @@ class _CheckInPageState extends State<CheckInPage> {
                   return null;
                 },
               ),
-              // const SizedBox(height: 10.0),
-              // TextFormField(
-              //   controller: _emailController,
-              //   keyboardType: TextInputType.emailAddress,
-              //   decoration: const InputDecoration(labelText: 'Email'),
-              //   validator: (val) {
-              //     if (val == null || val.isEmpty) {
-              //       return 'Please enter a valid email';
-              //     }
-              //     return null;
-              //   },
-              // ),
               const SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: () async {
-                  final validated = _formKey.currentState?.validate() ?? false;
-                  if (!validated) return;
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        final validated =
+                            _formKey.currentState?.validate() ?? false;
+                        if (!validated) return;
 
-                  try {
-                    final controller = context.read<VisitorsService>();
-                    await controller.checkIn(
-                      name: _nameController.text,
-                      phone: _phoneController.text,
-                      email: _emailController.text,
-                    );
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Visitor checked in successfully')),
-                    );
-                  } catch (_) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Error occurred while checking in')),
-                    );
-                  }
-                },
-                child: const Text('Scan NFC to check in'),
+                        setState(() {
+                          _isLoading = true;
+                        });
+
+                        try {
+                          final controller = context.read<VisitorsService>();
+                          await controller.checkIn(
+                            name: _nameController.text,
+                            phone: _phoneController.text,
+                            email: _emailController.text,
+                          );
+                          if (!context.mounted) return;
+
+                          // Only show the success message after writing to NFC
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content:
+                                  Text('Visitor checked in successfully'),
+                            ),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Error occurred while checking in: $e',
+                              ),
+                            ),
+                          );
+                        } finally {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                        }
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _isLoading ? Colors.grey : null, // Grey out button if loading
+                ),
+                child: _isLoading
+                    ? const Text('Please tap NFC card...')
+                    : const Text('Scan NFC to check in'),
               ),
             ],
           ),

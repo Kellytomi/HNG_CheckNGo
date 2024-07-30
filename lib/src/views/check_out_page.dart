@@ -1,14 +1,12 @@
+import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../services/visitors_service.dart';
 
 class CheckOutPage extends StatelessWidget {
   const CheckOutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Check Out'),
@@ -29,12 +27,14 @@ class CheckOutPage extends StatelessWidget {
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content: Text('Visitor checked out successfully')),
+                        content: Text('Visitor checked out successfully'),
+                      ),
                     );
-                  } catch (_) {
+                  } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Error occurred while checking out')),
+                      SnackBar(
+                        content: Text('Error occurred while checking out: $e'),
+                      ),
                     );
                   }
                 },
