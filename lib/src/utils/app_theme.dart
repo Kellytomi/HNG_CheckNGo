@@ -11,7 +11,7 @@ class AppTheme {
         elevation: 0.0,
         color: kBGColor,
         iconTheme: const IconThemeData(color: Colors.black),
-        centerTitle: true,
+        centerTitle: false,
         titleTextStyle: GoogleFonts.montserrat(
           color: kFontColor1,
           fontWeight: FontWeight.w600,

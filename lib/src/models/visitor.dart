@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:ui';
+
+import 'package:checkngo/src/utils/colors.dart';
 
 class Visitor {
   final String fullname;
@@ -111,5 +114,14 @@ enum VisitorStatus {
       (val) => val.name.toLowerCase() == data.toLowerCase(),
       orElse: () => VisitorStatus.none,
     );
+  }
+}
+
+extension StatusColor on VisitorStatus {
+  Color get color {
+    return switch (this) {
+      VisitorStatus.checkIn => kGreenColor,
+      _ => kRedColor,
+    };
   }
 }
