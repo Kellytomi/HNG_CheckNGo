@@ -1,33 +1,47 @@
 import 'package:checkngo/src/models/visitor.dart';
-import 'package:checkngo/src/services/admin_service.dart';
+import 'package:checkngo/src/services/db_service.dart';
 import 'package:checkngo/src/services/nfc_service.dart';
 
 class VisitorsService {
-  final AdminService adminService;
   final NFCService nfcService;
-  const VisitorsService({required this.adminService, required this.nfcService});
+  final DBService dbService;
+  const VisitorsService({required this.nfcService, required this.dbService});
 
   Future<void> checkIn({
     required String name,
     required String phone,
-    required String? email,
+    String email = '',
+    String? visitReason,
   }) async {
-    final admin = await adminService.getAdmin();
-
     final visitor = Visitor(
-      adminID: admin.email,
       fullname: name,
       phone: phone,
-      email: email,
-      status: VisitorStatus.checkIn,
-      checkedAt: DateTime.now(),
+      email: email.isEmpty ? null : email,
+      checkedInAt: DateTime.now(),
+      visitReason: visitReason,
     );
 
     try {
       // first write to the NFC tag
-      // and then call _DBsetStatus() to send the data to Firebase
-      await nfcService.writeTag(visitor.toJson());
-      await _DBsetStatus(visitor);
+      // and then save the data to the local DB
+      await nfcService.writeTag(phone);
+      await dbService.save(visitor);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  // What happens when a checked-out tag is scanned again to check-out?
+  // Ideally, it should show an option to the user asking if
+  // they want to check the visitor in again.
+  Future<void> recheckIn(String phone) async {
+    try {
+      final visitor = await dbService.getVisitor(phone);
+      final newEntry = visitor.copyWith(
+        checkedInAt: DateTime.now(),
+        checkedOutAt: null,
+      );
+      await dbService.save(newEntry);
     } catch (_) {
       rethrow;
     }
@@ -36,74 +50,41 @@ class VisitorsService {
   Future<void> checkOut() async {
     try {
       // Get the visitor by reading from the NFC tag,
-      // change the status to checkOut
-      // and then call _DBsetStatus() to send the data to Firebase
-      late Visitor visitor;
+      // set the checkedOutAt time
+      // and then save the data to the local DB
+      late String phone;
       await nfcService.readTag((payload) {
-        visitor =
-            Visitor.fromJson(payload).copyWith(status: VisitorStatus.checkOut);
+        print('payload=============>');
+        print(payload);
+        print('payload=============>');
+
+        phone = payload;
       });
-      await _DBsetStatus(visitor);
+
+      print('phone=============>');
+      print(phone);
+      print('phone=============>');
+
+      final visitor = await dbService.getVisitor(phone);
+      // What happens when a checked-out tag is scanned again to check-out?
+      if (visitor.status == VisitorStatus.checkOut) {
+        throw Exception('Visitor already checked out');
+      }
+      await dbService.save(visitor.copyWith(checkedOutAt: DateTime.now()));
     } catch (e) {
       print(e);
       rethrow;
     }
   }
 
-  Stream<List<Visitor>> getVisitors() {
-    return Stream.value(_mockVisitors);
+  Future<List<Visitor>> getVisitors(SortVisitorBy sort) async {
+    final visitors = await dbService.getVisitors(sort);
+    final c = dbService.toCSV(visitors);
+    print(c);
+    return visitors;
   }
 
-  Future<void> _DBsetStatus(Visitor visitor) async {}
+  Future<void> saveAsCSV(List<Visitor> visitors) {
+    return dbService.saveCsvFile(visitors);
+  }
 }
-
-final _mockVisitors = [
-  Visitor(
-    adminID: 'admin@gmail.com',
-    fullname: 'asf ba',
-    phone: '+234543453245',
-    email: 'a@a.com',
-    status: VisitorStatus.checkIn,
-    checkedAt: DateTime.now(),
-  ),
-  Visitor(
-    adminID: 'admin@gmail.com',
-    fullname: 'Qasf ba',
-    phone: '+234653445',
-    email: 'a@b.com',
-    status: VisitorStatus.checkIn,
-    checkedAt: DateTime.now(),
-  ),
-  Visitor(
-    adminID: 'admin@gmail.com',
-    fullname: 'Qasf ba',
-    phone: '+234653445',
-    email: 'a@b.com',
-    status: VisitorStatus.checkOut,
-    checkedAt: DateTime.now(),
-  ),
-  Visitor(
-    adminID: 'admin@gmail.com',
-    fullname: 'asf ba',
-    phone: '+234543453245',
-    email: 'a@a.com',
-    status: VisitorStatus.checkOut,
-    checkedAt: DateTime.now(),
-  ),
-  Visitor(
-    adminID: 'admin@gmail.com',
-    fullname: 'Bbas ba',
-    phone: '+23494349053',
-    email: 'a@d.com',
-    status: VisitorStatus.checkIn,
-    checkedAt: DateTime.now(),
-  ),
-  Visitor(
-    adminID: 'admin@gmail.com',
-    fullname: 'Bbas ba',
-    phone: '+23494349053',
-    email: 'a@d.com',
-    status: VisitorStatus.checkOut,
-    checkedAt: DateTime.now(),
-  ),
-];

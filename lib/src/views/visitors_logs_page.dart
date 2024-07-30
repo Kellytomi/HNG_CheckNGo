@@ -1,3 +1,4 @@
+import 'package:checkngo/src/services/db_service.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,8 +15,8 @@ class VisitorsLogsPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Visitors Logs')),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-        child: StreamBuilder(
-          stream: controller.getVisitors(),
+        child: FutureBuilder(
+          future: controller.getVisitors(SortVisitorBy.checkedIn),
           builder: (_, snapshot) {
             return switch (snapshot.connectionState) {
               ConnectionState.waiting => const Center(

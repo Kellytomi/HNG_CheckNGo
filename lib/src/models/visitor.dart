@@ -1,59 +1,77 @@
 import 'dart:convert';
 
 class Visitor {
-  final String adminID;
   final String fullname;
   final String phone;
   final String? email;
-  final VisitorStatus status;
-  final DateTime checkedAt;
+  final DateTime checkedInAt;
+  final DateTime? checkedOutAt;
+  final String? visitReason;
 
   const Visitor({
-    required this.adminID,
     required this.fullname,
     required this.phone,
-    required this.email,
-    required this.status,
-    required this.checkedAt,
+    required this.checkedInAt,
+    this.email,
+    this.checkedOutAt,
+    this.visitReason,
   });
 
+  VisitorStatus get status {
+    if (checkedOutAt == null) {
+      return VisitorStatus.checkIn;
+    }
+    return VisitorStatus.checkOut;
+  }
+
   Visitor copyWith({
-    String? adminID,
     String? fullname,
     String? phone,
     String? email,
-    VisitorStatus? status,
-    DateTime? checkedAt,
+    DateTime? checkedInAt,
+    DateTime? checkedOutAt,
+    String? visitReason,
   }) {
     return Visitor(
-      adminID: adminID ?? this.adminID,
       fullname: fullname ?? this.fullname,
       phone: phone ?? this.phone,
       email: email ?? this.email,
-      status: status ?? this.status,
-      checkedAt: checkedAt ?? this.checkedAt,
+      checkedInAt: checkedInAt ?? this.checkedInAt,
+      checkedOutAt: checkedOutAt,
+      visitReason: visitReason ?? this.visitReason,
     );
+  }
+
+  List<Object?> toCsvRow() {
+    return [
+      fullname,
+      phone,
+      email,
+      checkedInAt,
+      checkedOutAt,
+      visitReason,
+    ];
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'adminID': adminID,
       'fullname': fullname,
       'phone': phone,
       'email': email,
-      'status': status.name,
-      'checkedAt': checkedAt.toIso8601String(),
+      'checkedInAt': checkedInAt.toIso8601String(),
+      'checkedOutAt': checkedOutAt?.toIso8601String(),
+      'visitReason': visitReason,
     };
   }
 
   factory Visitor.fromMap(Map<String, dynamic> map) {
     return Visitor(
-      adminID: map['adminID'] as String,
       fullname: map['fullname'] as String,
       phone: map['phone'] as String,
       email: map['email'] as String,
-      status: VisitorStatus.fromString(map['status'] as String),
-      checkedAt: DateTime.tryParse(map['checkedAt'] as String)!,
+      visitReason: map['visitReason'] as String,
+      checkedInAt: DateTime.tryParse(map['checkedInAt'] as String)!,
+      checkedOutAt: DateTime.tryParse(map['checkedOutAt'] as String)!,
     );
   }
 
@@ -64,7 +82,7 @@ class Visitor {
 
   @override
   String toString() {
-    return 'Customer(adminID: $adminID, fullname: $fullname, phone: $phone, email: $email, status: $status, checkedAt: $checkedAt)';
+    return 'Customer(fullname: $fullname, phone: $phone, email: $email, visitReason: $visitReason, checkedInAt: $checkedInAt, checkedOutAt: $checkedOutAt)';
   }
 
   @override

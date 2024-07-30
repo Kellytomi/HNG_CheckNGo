@@ -1,28 +1,31 @@
-import 'package:checkngo/src/services/admin_service.dart';
+import 'package:checkngo/src/models/visitor_cache_model.dart';
+import 'package:checkngo/src/services/db_service.dart';
 import 'package:checkngo/src/services/nfc_service.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
-import 'package:checkngo/src/views/auth_state.dart';
 import 'package:checkngo/src/views/check_in_page.dart';
 import 'package:checkngo/src/views/home_page.dart';
-import 'package:checkngo/src/views/login_page.dart';
 import 'package:checkngo/src/views/visitors_logs_page.dart';
 import 'package:checkngo/src/views/check_out_page.dart';
-import 'package:checkngo/src/views/register_page.dart';
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+
+  final dir = await getApplicationDocumentsDirectory();
+  final isar = await Isar.open(
+    [VisitorCacheModelSchema],
+    directory: dir.path,
   );
-  runApp(const MainApp());
+
+  runApp(MainApp(isar: isar));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  const MainApp({super.key, required this.isar});
+  final Isar isar;
 
   @override
   Widget build(BuildContext context) {
@@ -30,24 +33,21 @@ class MainApp extends StatelessWidget {
       providers: [
         Provider<NFCService>(create: (_) => NFCService()),
 
-        Provider<AdminService>(create: (_) => AdminService()),
+        Provider<DBService>(create: (_) => DBService(isar)),
 
-        ProxyProvider2<AdminService, NFCService, VisitorsService>(
-          update: (_, adminService, nfcService, __) {
+        ProxyProvider2<DBService, NFCService, VisitorsService>(
+          update: (_, dbService, nfcService, __) {
             return VisitorsService(
-              adminService: adminService,
               nfcService: nfcService,
+              dbService: dbService,
             );
           },
         ),
       ],
       child: MaterialApp(
-        home: const AuthState(),
+        home: const HomePage(),
         routes: {
-          '/login': (_) => const LoginPage(),
-          '/register': (_) => const RegisterPage(),
           '/home': (_) => const HomePage(),
-          '/auth': (_) => const AuthState(),
           '/nfc-read': (_) => const CheckOutPage(),
           '/create-visitor': (_) => const CheckInPage(),
           '/manage-visitor': (_) => const VisitorsLogsPage(),
