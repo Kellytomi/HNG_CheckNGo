@@ -8,10 +8,9 @@ class CheckOutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Check Out'),
+        // title: const Text(''),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -20,8 +19,15 @@ class CheckOutPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const CircleAvatar(radius: 70.0),
-              const SizedBox(height: 10.0),
-              ElevatedButton(
+              const SizedBox(height: 30.0),
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/create-visitor');
+                },
+                child: const Text('Write to NFC'),
+              ),
+              const SizedBox(height: 20.0),
+              OutlinedButton(
                 onPressed: () async {
                   try {
                     final controller = context.read<VisitorsService>();

@@ -15,6 +15,7 @@ class _CheckInPageState extends State<CheckInPage> {
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
+  late TextEditingController _visitReason;
 
   @override
   void initState() {
@@ -22,6 +23,7 @@ class _CheckInPageState extends State<CheckInPage> {
     _nameController = TextEditingController();
     _phoneController = TextEditingController();
     _emailController = TextEditingController();
+    _visitReason = TextEditingController();
   }
 
   @override
@@ -29,6 +31,7 @@ class _CheckInPageState extends State<CheckInPage> {
     _nameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
+    _visitReason.dispose();
     super.dispose();
   }
 
@@ -66,18 +69,21 @@ class _CheckInPageState extends State<CheckInPage> {
                 },
               ),
               // const SizedBox(height: 10.0),
-              // TextFormField(
-              //   controller: _emailController,
-              //   keyboardType: TextInputType.emailAddress,
-              //   decoration: const InputDecoration(labelText: 'Email'),
-              //   validator: (val) {
-              //     if (val == null || val.isEmpty) {
-              //       return 'Please enter a valid email';
-              //     }
-              //     return null;
-              //   },
-              // ),
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration:
+                    const InputDecoration(labelText: 'Email (Optional)'),
+              ),
               const SizedBox(height: 20.0),
+
+              TextFormField(
+                controller: _visitReason,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                    labelText: 'Reason for visit (Optional)'),
+              ),
+              const SizedBox(height: 50.0),
               ElevatedButton(
                 onPressed: () async {
                   final validated = _formKey.currentState?.validate() ?? false;
@@ -89,6 +95,7 @@ class _CheckInPageState extends State<CheckInPage> {
                       name: _nameController.text,
                       phone: _phoneController.text,
                       email: _emailController.text,
+                      visitReason: _visitReason.text,
                     );
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(

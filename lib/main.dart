@@ -2,8 +2,9 @@ import 'package:checkngo/src/models/visitor_cache_model.dart';
 import 'package:checkngo/src/services/db_service.dart';
 import 'package:checkngo/src/services/nfc_service.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
+import 'package:checkngo/src/utils/app_theme.dart';
 import 'package:checkngo/src/views/check_in_page.dart';
-import 'package:checkngo/src/views/home_page.dart';
+import 'package:checkngo/src/views/tab_page.dart';
 import 'package:checkngo/src/views/visitors_logs_page.dart';
 import 'package:checkngo/src/views/check_out_page.dart';
 import 'package:flutter/material.dart';
@@ -45,9 +46,9 @@ class MainApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        home: const HomePage(),
+        theme: AppTheme.lightTheme,
+        home: const TabPage(),
         routes: {
-          '/home': (_) => const HomePage(),
           '/nfc-read': (_) => const CheckOutPage(),
           '/create-visitor': (_) => const CheckInPage(),
           '/manage-visitor': (_) => const VisitorsLogsPage(),
