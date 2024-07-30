@@ -1,4 +1,6 @@
+import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
+import 'package:checkngo/src/views/app_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +17,8 @@ class _CheckInPageState extends State<CheckInPage> {
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
+  late TextEditingController _visitReasonController;
+
   bool _isLoading = false;
 
   @override
@@ -23,6 +27,7 @@ class _CheckInPageState extends State<CheckInPage> {
     _nameController = TextEditingController();
     _phoneController = TextEditingController();
     _emailController = TextEditingController();
+    _visitReasonController = TextEditingController();
   }
 
   @override
@@ -30,6 +35,7 @@ class _CheckInPageState extends State<CheckInPage> {
     _nameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
+    _visitReasonController.dispose();
     super.dispose();
   }
 
@@ -37,85 +43,36 @@ class _CheckInPageState extends State<CheckInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Check In')),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+      body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
-                controller: _nameController,
-                keyboardType: TextInputType.name,
-                decoration: const InputDecoration(labelText: 'Full Name'),
-                validator: (val) {
-                  if (val == null || val.isEmpty) {
-                    return 'Please enter a valid name';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10.0),
-              TextFormField(
-                controller: _phoneController,
-                keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(labelText: 'Phone Number'),
-                validator: (val) {
-                  if (val == null || val.isEmpty) {
-                    return 'Please enter a valid phone number';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: _isLoading
-                    ? null
-                    : () async {
-                        final validated =
-                            _formKey.currentState?.validate() ?? false;
-                        if (!validated) return;
-
-                        setState(() {
-                          _isLoading = true;
-                        });
-
-                        try {
-                          final controller = context.read<VisitorsService>();
-                          await controller.checkIn(
-                            name: _nameController.text,
-                            phone: _phoneController.text,
-                            email: _emailController.text,
-                          );
-                          if (!context.mounted) return;
-
-                          // Only show the success message after writing to NFC
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content:
-                                  Text('Visitor checked in successfully'),
-                            ),
-                          );
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Error occurred while checking in: $e',
-                              ),
-                            ),
-                          );
-                        } finally {
-                          setState(() {
-                            _isLoading = false;
-                          });
-                        }
-                      },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _isLoading ? Colors.grey : null, // Grey out button if loading
-                ),
-                child: _isLoading
-                    ? const Text('Please tap NFC card...')
-                    : const Text('Scan NFC to check in'),
-              ),
+              // TextFormField(
+              //   controller: _nameController,
+              //   keyboardType: TextInputType.name,
+              //   decoration: const InputDecoration(labelText: 'Full Name'),
+              //   validator: (val) {
+              //     if (val == null || val.isEmpty) {
+              //       return 'Please enter a valid name';
+              //     }
+              //     return null;
+              //   },
+              // ),
+              // ElevatedButton(
+              //   onPressed: () async {
+              //     final validated = _formKey.currentState?.validate() ?? false;
+              //     if (!validated) return;
+              //     final service = context.read<VisitorsService>();
+              //     service.checkIn(
+              //       name: _nameController.text,
+              //       phone: _phoneController.text,
+              //       email: _emailController.text,
+              //       visitReason: _visitReasonController.text,
+              //     );
+              //   },
+              //   child: const Text('Scan NFC to check in'),
+              // ),
             ],
           ),
         ),
