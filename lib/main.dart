@@ -33,9 +33,7 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<NFCService>(create: (_) => NFCService()),
-
         Provider<DBService>(create: (_) => DBService(isar)),
-
         ProxyProvider2<DBService, NFCService, VisitorsService>(
           update: (_, dbService, nfcService, __) {
             return VisitorsService(

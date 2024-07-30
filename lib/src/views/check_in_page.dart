@@ -19,7 +19,7 @@ class _CheckInPageState extends State<CheckInPage> {
   late TextEditingController _emailController;
   late TextEditingController _visitReasonController;
 
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _CheckInPageState extends State<CheckInPage> {
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
-          child: Column(
+          child: const Column(
             children: [
               // TextFormField(
               //   controller: _nameController,
