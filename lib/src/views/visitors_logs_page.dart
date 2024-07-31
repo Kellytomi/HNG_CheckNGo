@@ -27,11 +27,43 @@ class _VisitorsLogsPageState extends State<VisitorsLogsPage> {
         title: const Text('Visitor\'s Logs'),
         centerTitle: false,
         actions: [
-          IconButton(
+          // IconButton(
+          //   icon: const Icon(Icons.more_vert),
+          //   onPressed: () {
+          //     // Open a dialog box that shows CSV Download and JSON Download
+
+          //   },
+          // ),
+          PopupMenuButton(
             icon: const Icon(Icons.more_vert),
-            onPressed: () {
-              // Open a dialog box that shows CSV Download and JSON Download
-            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem(
+                child: Text('Download',style: TextStyle(color: Colors.grey),),
+              ),
+              PopupMenuItem(
+                child: Row(
+                  children: [
+                    const Text('CSV Download'),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.download),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                  child: Row(
+                children: [
+                  const Text('JSON Download'),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.download),
+                  ),
+                ],
+              )),
+            ],
           ),
         ],
       ),
