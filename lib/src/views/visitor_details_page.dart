@@ -31,7 +31,7 @@ class VisitorDetailsPage extends StatelessWidget {
               ),
               const SizedBox(height: 11.14),
               Text(
-                'Status: Check ${visitor.status.name}',
+                'Status: Checked ${visitor.status.name}',
                 style: GoogleFonts.montserrat(
                   fontSize: 16.05,
                   color: visitor.status.color,
@@ -110,9 +110,9 @@ class VisitorDetailsPage extends StatelessWidget {
         ),
       ),
       bottomSheet: Padding(
-        padding: commonPadding.copyWith(bottom: 8.0, top: 8.0),
+        padding: commonPadding.copyWith(bottom: 14.0, top: 8.0),
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: Navigator.of(context).pop,
           child: const Text('Back'),
         ),
       ),

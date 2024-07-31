@@ -10,6 +10,19 @@ class DBService {
   final Isar isar;
   DBService(this.isar);
 
+  Future<void> saveAll(List<Visitor> visitors) async {
+    await isar.writeTxn(() async {
+      await isar.visitorCacheModels.putAll(
+        List.generate(
+          visitors.length,
+          (i) {
+            return VisitorCacheModel.fromVisitor(visitors[i]);
+          },
+        ),
+      );
+    });
+  }
+
   Future<void> save(Visitor visitor) async {
     await isar.writeTxn(() async {
       await isar.visitorCacheModels.put(
@@ -31,8 +44,13 @@ class DBService {
   Future<List<Visitor>> getVisitors(SortVisitorBy sort) async {
     final qBuilder = isar.visitorCacheModels.where();
     final list = await switch (sort) {
-      SortVisitorBy.checkedIn => qBuilder.sortByCheckedInAtDesc().findAll(),
-      SortVisitorBy.checkedOut => qBuilder.sortByCheckedOutAtDesc().findAll(),
+      SortVisitorBy.checkedIn =>
+        qBuilder.sortByCheckedInAtDesc().findAll(),
+      SortVisitorBy.checkedOut => qBuilder
+          .filter()
+          .checkedOutAtIsNotNull()
+          .sortByCheckedOutAtDesc()
+          .findAll(),
     };
     return List.generate(list.length, (i) {
       return list[i].toVisitor();

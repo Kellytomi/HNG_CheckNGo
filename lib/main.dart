@@ -7,6 +7,7 @@ import 'package:checkngo/src/utils/app_theme.dart';
 import 'package:checkngo/src/views/check_in_page.dart';
 import 'package:checkngo/src/views/tab_page.dart';
 import 'package:checkngo/src/views/tag_info_page.dart';
+import 'package:checkngo/src/views/visitor_details_page.dart';
 import 'package:checkngo/src/views/visitors_logs_page.dart';
 import 'package:checkngo/src/views/welcome_page.dart';
 import 'package:flutter/material.dart';
@@ -51,12 +52,15 @@ class MainApp extends StatelessWidget {
         home: const TabPage(),
         routes: {
           '/tab': (_) => const TabPage(),
-
           '/create-visitor': (_) => const CheckInPage(),
           '/tag-info': (ctx) {
-          final visitor = ModalRoute.of(ctx)!.settings.arguments as Visitor;
-          return TagInfoPage(visitor: visitor);
-        },
+            final visitor = ModalRoute.of(ctx)!.settings.arguments as Visitor;
+            return TagInfoPage(visitor: visitor);
+          },
+          '/visitor-details': (ctx) {
+            final visitor = ModalRoute.of(ctx)!.settings.arguments as Visitor;
+            return VisitorDetailsPage(visitor: visitor);
+          },
           '/manage-visitor': (_) => const VisitorsLogsPage(),
         },
       ),

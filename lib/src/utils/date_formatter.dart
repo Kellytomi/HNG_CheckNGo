@@ -24,9 +24,12 @@ extension Formatter on DateTime {
     return '$tempDay $tempMonthYear';
   }
 
-
   String get vTimeFormat {
     final tempTime = DateFormat('hh:mm').format(this);
     return '$tempTime$timeMSuffix';
+  }
+
+  String get vDTFormat {
+    return '$vDateFormat, $vTimeFormat';
   }
 }

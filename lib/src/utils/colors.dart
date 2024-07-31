@@ -5,6 +5,7 @@ const kPrimaryColor = Color(0xFF003366);
 const kSwatchColor = Color(0xFF5CAADD);
 const kSurfaceColor = Color(0xFFF2F2F2);
 const kOnSurfaceColor = Color(0xFF929292);
+const kOnSurfaceColor2 = Color(0xFFD9D9D9);
 const kFontColor1 = Color(0xFF191919);
 const kFontColor2 = Color(0xFF8F8E94);
 const kFontColor3 = Color(0xFF494949);
