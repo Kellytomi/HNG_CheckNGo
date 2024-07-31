@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:checkngo/src/models/visitor.dart';
@@ -178,6 +179,18 @@ class DBService {
     final file = File(path);
 
     await file.writeAsString(toCSV(visitors));
+  }
+
+  Future<void> saveJsonFile(List<Visitor> visitors) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/visitors-logs.json';
+    final file = File(path);
+
+    final list = [];
+    for (final visitor in visitors) {
+      list.add(visitor.toMap());
+    }
+    await file.writeAsString(json.encode(list));
   }
 }
 
