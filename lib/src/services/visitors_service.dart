@@ -25,8 +25,20 @@ class VisitorsService {
 
     try {
       // Write to the NFC tag and ensure this process completes before proceeding
-      await nfcService.writeTag(phone);
+      // await nfcService.writeTag(phone);
+      nfcService.startNFCOperation(
+        nfcOperation: NFCOperation.write,
+        data: phone,
+      );
+
       // Only after successful NFC write, save the visitor data to the local DB
+      await Future.delayed(const Duration(seconds: 3));
+      if (nfcService.isProcessing) {
+        throw CustomException(
+          'Trouble detecting an NFC tag. Bring tag close to device',
+        );
+      }
+
       await dbService.save(visitor);
       return visitor;
     } catch (e) {
@@ -51,23 +63,21 @@ class VisitorsService {
   // }
 
   Future<Visitor> readNFC() async {
-    // final visitor = await service.checkOut();
     // Get the visitor by reading from the NFC tag, set the checkedOutAt time
     try {
-      String? phone;
-      await nfcService.readTag((payload) {
-        if (payload.startsWith("Failed")) {
-          throw CustomException(payload);
-        }
-        phone = payload;
-      });
+      nfcService.startNFCOperation(nfcOperation: NFCOperation.read);
 
-      // Ensure phone is not null
-      if (phone == null || phone!.isEmpty) {
-        throw CustomException('Failed to read NFC tag.');
+      await Future.delayed(const Duration(seconds: 3));
+      if (nfcService.isProcessing) {
+        throw CustomException(
+          'Trouble detecting an NFC tag. Bring tag close to device',
+        );
+      }
+      if (nfcService.message.toLowerCase().contains('oops')) {
+        throw CustomException(nfcService.message);
       }
 
-      final visitor = await dbService.getVisitor(phone!);
+      final visitor = await dbService.getVisitor(nfcService.message);
       return visitor;
     } catch (e) {
       rethrow;
@@ -83,22 +93,29 @@ class VisitorsService {
       return visitor;
     } catch (e) {
       rethrow;
-      // throw CustomException('Error occurred while checking out');
     }
   }
 
   Future<(List<Visitor>, bool)> getActiveVisitors() async {
-    final visitors = await dbService.getActiveVisitors();
-    return visitors;
+    try {
+      final visitors = await dbService.getActiveVisitors();
+      return visitors;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> isEmptyList() async {
-    final visitors = await getActiveVisitors();
+    try {
+      final visitors = await getActiveVisitors();
 
-    if (visitors.$1.isEmpty || visitors.$2) {
-      return true;
+      if (visitors.$1.isEmpty || visitors.$2) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      rethrow;
     }
-    return false;
   }
 
   Future<List<Visitor>> getVisitors(SortVisitorBy sort) async {

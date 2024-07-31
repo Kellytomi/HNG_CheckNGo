@@ -22,6 +22,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var isEmpty = true;
 
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +37,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(isEmpty);
     final controller = context.watch<VisitorsService>();
     return Scaffold(
       body: SafeArea(
