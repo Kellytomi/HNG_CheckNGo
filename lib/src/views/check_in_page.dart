@@ -144,7 +144,6 @@ class _CheckInPageState extends State<CheckInPage> {
       if (!context.mounted) return;
       Navigator.of(context)
           .pushReplacementNamed('/tag-info', arguments: visitor);
-
     } on CustomException catch (e) {
       if (!context.mounted) return;
       _popDialog(context);

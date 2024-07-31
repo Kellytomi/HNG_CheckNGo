@@ -6,7 +6,7 @@ class NFCService {
     final isAvailable = await NfcManager.instance.isAvailable();
     if (!isAvailable) {
       throw CustomException(
-          'Trouble detecting the NFC service. Make sure this device is NFC enabled, or go to device settings and turn NFC on if it is.');
+          'Trouble detecting the NFC service. Make sure this device is NFC enabled, or go to device settings and turn on NFC.');
     }
 
     var successful = false;
@@ -43,6 +43,14 @@ class NFCService {
   }
 
   Future<void> readTag(Function(String) onRead) async {
+    final isAvailable = await NfcManager.instance.isAvailable();
+    if (!isAvailable) {
+      throw CustomException(
+          'Trouble detecting the NFC service. Make sure this device is NFC enabled, or go to device settings and turn on NFC.');
+    }
+
+    var successful = false;
+
     try {
       await NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
         try {
@@ -61,6 +69,7 @@ class NFCService {
           String payload = String.fromCharCodes(message.records.first.payload);
           // Assuming the data is stored as plain text, skipping the first 3 bytes (language code)
           onRead(payload.substring(3));
+          successful = true;
           await NfcManager.instance.stopSession();
         } catch (e) {
           await NfcManager.instance
@@ -69,6 +78,10 @@ class NFCService {
           rethrow;
         }
       });
+
+      if (!successful) {
+        await readTag(onRead);
+      }
     } catch (e) {
       rethrow;
     }

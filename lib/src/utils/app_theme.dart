@@ -41,13 +41,10 @@ class AppTheme {
           backgroundColor: WidgetStateProperty.all(Colors.transparent),
           foregroundColor: WidgetStateProperty.all(kPrimaryColor),
           shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              side: const BorderSide(color: kPrimaryColor, width: 1.0),
-              borderRadius: BorderRadius.circular(32.0),
-            ),
-            // OutlinedBorder(
-            //     borderSide: const BorderSide(color: kPrimaryColor),
-            //     borderRadius: BorderRadius.circular(32.0)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(32.0)),
+          ),
+          side: WidgetStateProperty.all(
+            const BorderSide(color: kPrimaryColor, width: 1.0),
           ),
           minimumSize: WidgetStateProperty.all(
             const Size(double.infinity, 48.52),

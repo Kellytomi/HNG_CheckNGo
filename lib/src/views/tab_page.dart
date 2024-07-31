@@ -1,8 +1,5 @@
-import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/utils/colors.dart';
-import 'package:checkngo/src/views/check_in_page.dart';
 import 'package:checkngo/src/views/home_page.dart';
-import 'package:checkngo/src/views/tag_info_page.dart';
 import 'package:checkngo/src/views/visitors_logs_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,20 +11,7 @@ class TabPage extends StatefulWidget {
   State<TabPage> createState() => _TabPageState();
 }
 
-final _pages = [
-  // You can substitute HomePage with any UI you're building so you can view what you build
-  // HomePage(),
-  CheckInPage(),
-  // TagInfoPage(
-  //   visitor: Visitor(
-  //     fullname: 'Jamiu Jimoh',
-  //     phone: '08088732785',
-  //     checkedInAt: DateTime.now(),
-  //     visitReason: 'Logde for 3 days',
-  //   ),
-  // ),
-  VisitorsLogsPage(),
-];
+const _pages = [HomePage(), VisitorsLogsPage()];
 
 class _TabPageState extends State<TabPage> {
   var _currentIndex = 0;

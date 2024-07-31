@@ -11,11 +11,13 @@ class TagInfoPage extends StatelessWidget {
   const TagInfoPage({
     super.key,
     required this.visitor,
+    this.buttonText,
     this.onPressed,
     this.onCancel,
   });
   final Visitor visitor;
-  final VoidCallback? onPressed;
+  final String? buttonText;
+  final Function(BuildContext)? onPressed;
   final VoidCallback? onCancel;
 
   @override
@@ -92,8 +94,8 @@ class TagInfoPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 63.0),
                 ElevatedButton(
-                  onPressed: onPressed,
-                  child: const Text('Back to home'),
+                  onPressed: () => onPressed?.call(context),
+                  child: Text(buttonText ?? 'Back to home'),
                 ),
                 if (onCancel != null)
                   TextButton(

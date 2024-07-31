@@ -61,7 +61,6 @@ class CustomTextfield extends StatelessWidget {
           cursorColor: kPrimaryColor,
           maxLines: maxLines,
           inputFormatters: inputFormatters,
-          
           style: GoogleFonts.montserrat(
             fontSize: 16.0,
             color: const Color(0xFF595959),

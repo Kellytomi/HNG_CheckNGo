@@ -9,7 +9,6 @@ import 'package:checkngo/src/views/tab_page.dart';
 import 'package:checkngo/src/views/tag_info_page.dart';
 import 'package:checkngo/src/views/visitor_details_page.dart';
 import 'package:checkngo/src/views/visitors_logs_page.dart';
-import 'package:checkngo/src/views/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -54,13 +53,20 @@ class MainApp extends StatelessWidget {
           '/tab': (_) => const TabPage(),
           '/create-visitor': (_) => const CheckInPage(),
           '/tag-info': (ctx) {
-            final visitor = ModalRoute.of(ctx)!.settings.arguments as Visitor;
-            return TagInfoPage(visitor: visitor);
+            final params =
+                ModalRoute.of(ctx)!.settings.arguments as Map<String, Object>;
+            return TagInfoPage(
+              visitor: params['visitor'] as Visitor,
+              buttonText: params['buttonText'] as String?,
+              onCancel: params['onCancel'] as VoidCallback?,
+              onPressed: params['onPressed'] as Function(BuildContext)?,
+            );
           },
           '/visitor-details': (ctx) {
             final visitor = ModalRoute.of(ctx)!.settings.arguments as Visitor;
             return VisitorDetailsPage(visitor: visitor);
           },
+          '/check-in': (_) => const CheckInPage(),
           '/manage-visitor': (_) => const VisitorsLogsPage(),
         },
       ),

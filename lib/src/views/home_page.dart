@@ -1,68 +1,42 @@
-import 'dart:ui';
-
+import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/services/db_service.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:checkngo/src/utils/colors.dart';
+import 'package:checkngo/src/utils/constants.dart';
+import 'package:checkngo/src/utils/custom_exception.dart';
+import 'package:checkngo/src/views/empty_state_content.dart';
+import 'package:checkngo/src/views/visitor_log_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
+import 'app_dialogs.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return empty;
-  }
-}
+    final controller = context.watch<VisitorsService>();
 
-final activeUsers = Scaffold(
-  floatingActionButton: FloatingActionButton.extended(
-    onPressed: () {},
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    label: Row(
-      children: [
-        Text(
-          'Read Tag to checkout',
-          style: GoogleFonts.inter(
-              color: const Color(0xfff3f3f3),
-              fontSize: 14,
-              fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(
-          width: 4,
-        ),
-        const Icon(
-          Icons.nfc,
-        ),
-      ],
-    ),
-    backgroundColor: kPrimaryColor,
-  ),
-  floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-  body: Center(
-    child: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: SizedBox(
-          height: 600,
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: commonPadding,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                width: double.maxFinite,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                      colors: [Color(0xffE6E6E6), Color(0xffD8EBFF)]),
+                    colors: [Color(0xffE6E6E6), Color(0xffD8EBFF)],
+                  ),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 24, 20, 19),
                   child: Text(
-                    "Welcome",
+                    'Welcome',
                     style: GoogleFonts.inter(
                         fontSize: 24,
                         fontWeight: FontWeight.w500,
@@ -70,143 +44,225 @@ final activeUsers = Scaffold(
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 20.0,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Active visitors",
-                      textAlign: TextAlign.start,
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xff707070),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          side: const BorderSide(color: Color(0xff003366))),
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+              const SizedBox(height: 24.0),
+              Expanded(
+                child: FutureBuilder<(List<Visitor>, bool)>(
+                  future: controller.getActiveVisitors(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return const EmptyStateContent(
+                        text:
+                            'An error occured while fetching active visitors!',
+                      );
+                    } else if (snapshot.hasData) {
+                      final visitors = snapshot.data!;
+
+                      if (visitors.$1.isEmpty) {
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: EmptyStateContent(
+                                text: visitors.$2
+                                    ? 'It seems like you just got here. Start checking visitors in by writing to NFC tags.'
+                                    : 'There are currently no active visitors.',
+                              ),
+                            ),
+                            OutlinedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/check-in');
+                              },
+                              child: const Text("Write to NFC tag"),
+                            ),
+                            const SizedBox(height: 20.0),
+                          ],
+                        );
+                      }
+                      return Column(
                         children: [
-                          Text(
-                            "Add visitor",
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xff003366),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'Active visitors',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xff707070),
+                                  ),
+                                ),
+                              ),
+                              OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  minimumSize: const Size(20.0, 38.0),
+                                  side: const BorderSide(
+                                      color: Color(0xff003366)),
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/check-in');
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Add visitor',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color(0xff003366),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    const Icon(
+                                      Icons.add,
+                                      size: 15.0,
+                                      color: Color(0xff003366),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10.0),
+                          Expanded(
+                            child: ListView.builder(
+                              // shrinkWrap: true,
+                              // physics: const NeverScrollableScrollPhysics(),
+                              itemCount: visitors.$1.length,
+                              itemBuilder: (context, index) {
+                                final visitor = visitors.$1[index];
+                                return VisitorLogTile(
+                                  sort: SortVisitorBy.checkedIn,
+                                  visitor: visitor,
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(
+                                      '/visitor-details',
+                                      arguments: visitor,
+                                    );
+                                  },
+                                );
+                              },
                             ),
                           ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          const Icon(
-                            Icons.add,
-                            color: Color(0xff003366),
-                          )
+                          // const SizedBox(height: 50.0),
                         ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20.0,
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  },
+                ),
               ),
             ],
           ),
         ),
       ),
-    ),
-  ),
-);
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: kPrimaryColor,
+        onPressed: () => _read(context),
+        label: Row(
+          children: [
+            Text(
+              'Read Tag to checkout',
+              style: GoogleFonts.inter(
+                  color: kBGColor, fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(width: 4),
+            const Icon(Icons.nfc),
+          ],
+        ),
+      ),
+    );
+  }
 
-final empty = Scaffold(
-  body: Center(
-    child: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: SizedBox(
-          height: 600,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: double.maxFinite,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [Color(0xffE6E6E6), Color(0xffD8EBFF)]),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 19),
-                  child: Text(
-                    "Welcome",
-                    style: GoogleFonts.inter(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xff003366)),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-              Text(
-                "Active visitors",
-                textAlign: TextAlign.start,
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xff707070),
-                ),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-              Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset("assets/ghost.svg"),
-                      const SizedBox(
-                        height: 22.0,
-                      ),
-                      Text(
-                        "It seems like you just got here. you do not have active visitors. Write to NFC tag to start adding visitors.",
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.montserrat(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xff6B6E71)),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(
-                    color: Color(0xff003366),
-                  ),
-                ),
-                onPressed: () {},
-                child: const Text("Write to NFC tag"),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  ),
-);
+  Future<void> _read(BuildContext context) async {
+    final nav = Navigator.of(context);
+
+    try {
+      final service = context.read<VisitorsService>();
+      AppDialogs.showNFCScan(context: context, title: 'Ready to Read');
+      final savedVisitor = await service.readNFC();
+      if (!context.mounted) return;
+      _popDialog(context);
+      await Navigator.of(context).pushReplacementNamed(
+        '/tag-info',
+        arguments: {
+          'visitor': savedVisitor,
+          'buttonText': 'Check Out',
+          'onCancel': () {
+            nav.pushReplacementNamed('/tab');
+          },
+          'onPressed': (ctx) async {
+            try {
+              final visitor = await service.checkOut(savedVisitor.phone);
+              if (!ctx.mounted) return;
+              await AppDialogs.showSuccessDialog(
+                context: ctx,
+                title: 'Checkout complete',
+                buttonText: 'Back to home',
+                description: '${visitor.fullname} has been checked out.',
+                onPressed: () {
+                  _popDialog(ctx);
+                  nav.pushReplacementNamed('/tab');
+                },
+              );
+            } on CustomException catch (e) {
+              if (!ctx.mounted) return;
+              _popDialog(ctx);
+              await AppDialogs.showErrorDialog(
+                context: ctx,
+                message: e.message,
+                onPressed: () {
+                  _popDialog(ctx);
+                  nav.pushReplacementNamed('/tab');
+                },
+                onCancel: () {
+                  _popDialog(ctx);
+                  nav.pushReplacementNamed('/tab');
+                },
+              );
+            } catch (_) {}
+          },
+        },
+      );
+    } on CustomException catch (e) {
+      if (!context.mounted) return;
+      _popDialog(context);
+      await _displayErrorDialog(context: context, message: e.message);
+    } catch (e) {
+      if (!context.mounted) return;
+      _popDialog(context);
+      await _displayErrorDialog(context: context);
+    }
+  }
+
+  void _popDialog(BuildContext context) {
+    final dialogActive = ModalRoute.of(context)?.isCurrent != true;
+    if (dialogActive) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _displayErrorDialog({
+    required BuildContext context,
+    String? message,
+  }) async {
+    if (!context.mounted) return;
+    _popDialog(context);
+    await AppDialogs.showErrorDialog(
+      context: context,
+      message: message ?? 'Device could not read NFC Tag',
+      onPressed: () {
+        _popDialog(context);
+        _read(context);
+      },
+      onCancel: Navigator.of(context).pop,
+    );
+  }
+}

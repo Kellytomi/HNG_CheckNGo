@@ -2,7 +2,6 @@ import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/services/db_service.dart';
 import 'package:checkngo/src/utils/colors.dart';
 import 'package:checkngo/src/utils/date_formatter.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -85,7 +84,7 @@ class VisitorLogTile extends StatelessWidget {
                 ),
                 Text(
                   sort == SortVisitorBy.checkedIn
-                      ?visitor.checkedInAt.vDTFormat
+                      ? visitor.checkedInAt.vDTFormat
                       : DateFormat('MMM d, yyyy, h:mm a')
                           .format(visitor.checkedOutAt!),
                   style: GoogleFonts.montserrat(

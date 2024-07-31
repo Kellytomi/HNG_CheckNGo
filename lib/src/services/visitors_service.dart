@@ -36,28 +36,28 @@ class VisitorsService {
 
   // What happens when a checked-out tag is scanned again to check-out?
   // Ideally, it should show an option to the user asking if
-  // they want to check the visitor in again.
-  Future<void> recheckIn(String phone) async {
-    try {
-      final visitor = await dbService.getVisitor(phone);
-      final newEntry = visitor.copyWith(
-        checkedInAt: DateTime.now(),
-        checkedOutAt: null,
-      );
-      await dbService.save(newEntry);
-    } catch (_) {
-      rethrow;
-    }
-  }
+  // // they want to check the visitor in again.
+  // Future<void> recheckIn(String phone) async {
+  //   try {
+  //     final visitor = await dbService.getVisitor(phone);
+  //     final newEntry = visitor.copyWith(
+  //       checkedInAt: DateTime.now(),
+  //       checkedOutAt: null,
+  //     );
+  //     await dbService.save(newEntry);
+  //   } catch (_) {
+  //     rethrow;
+  //   }
+  // }
 
-  Future<void> checkOut() async {
+  Future<Visitor> readNFC() async {
+    // final visitor = await service.checkOut();
+    // Get the visitor by reading from the NFC tag, set the checkedOutAt time
     try {
-      // Get the visitor by reading from the NFC tag, set the checkedOutAt time
-      // and then save the data to the local DB
       String? phone;
       await nfcService.readTag((payload) {
         if (payload.startsWith("Failed")) {
-          throw Exception(payload);
+          throw CustomException(payload);
         }
         phone = payload;
       });
@@ -67,16 +67,29 @@ class VisitorsService {
         throw CustomException('Failed to read NFC tag.');
       }
 
-      // What happens when a checked-out tag is scanned again to check-out?
       final visitor = await dbService.getVisitor(phone!);
-      if (visitor.checkedOutAt != null) {
-        throw CustomException('Visitor already checked out');
-      }
-
-      await dbService.save(visitor.copyWith(checkedOutAt: DateTime.now()));
+      return visitor;
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<Visitor> checkOut(String phone) async {
+    // save the data to the local DB
+    try {
+      final visitor = await dbService.getVisitor(phone);
+      final updated = visitor.copyWith(checkedOutAt: DateTime.now());
+      await dbService.save(updated);
+      return visitor;
+    } catch (e) {
+      rethrow;
+      // throw CustomException('Error occurred while checking out');
+    }
+  }
+
+  Future<(List<Visitor>, bool)> getActiveVisitors() async {
+    final visitors = await dbService.getActiveVisitors();
+    return visitors;
   }
 
   Future<List<Visitor>> getVisitors(SortVisitorBy sort) async {

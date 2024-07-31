@@ -1,6 +1,4 @@
-import 'package:checkngo/src/models/visitor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
@@ -23,7 +21,6 @@ class NfcScanContent extends StatelessWidget {
                 fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 30.16),
-          // SvgPicture.asset('assets/scan.svg'),
           Lottie.asset(
             'assets/animations/nfc.json',
             height: 120.0,
