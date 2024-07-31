@@ -12,13 +12,19 @@ import 'package:provider/provider.dart';
 
 import 'app_dialogs.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  var isEmpty = true;
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<VisitorsService>();
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -61,6 +67,9 @@ class HomePage extends StatelessWidget {
                     } else if (snapshot.hasData) {
                       final visitors = snapshot.data!;
 
+                      if (visitors.$1.isEmpty || visitors.$2) {
+                        isEmpty = true;
+                      }
                       if (visitors.$1.isEmpty) {
                         return Column(
                           children: [
@@ -81,6 +90,7 @@ class HomePage extends StatelessWidget {
                           ],
                         );
                       }
+                      isEmpty = false;
                       return Column(
                         children: [
                           Row(
@@ -163,21 +173,25 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: kPrimaryColor,
-        onPressed: () => _read(context),
-        label: Row(
-          children: [
-            Text(
-              'Read Tag to checkout',
-              style: GoogleFonts.inter(
-                  color: kBGColor, fontSize: 14, fontWeight: FontWeight.w500),
+      floatingActionButton: isEmpty
+          ? null
+          : FloatingActionButton.extended(
+              backgroundColor: kPrimaryColor,
+              onPressed: () => _read(context),
+              label: Row(
+                children: [
+                  Text(
+                    'Read Tag to checkout',
+                    style: GoogleFonts.inter(
+                        color: kBGColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.nfc),
+                ],
+              ),
             ),
-            const SizedBox(width: 4),
-            const Icon(Icons.nfc),
-          ],
-        ),
-      ),
     );
   }
 
