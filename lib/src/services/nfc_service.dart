@@ -24,6 +24,7 @@ class NFCService {
             await ndef.write(message);
             successful = true;
             await NfcManager.instance.stopSession();
+            return;
           } catch (e) {
             await NfcManager.instance
                 .stopSession(errorMessage: "Failed to write tag");

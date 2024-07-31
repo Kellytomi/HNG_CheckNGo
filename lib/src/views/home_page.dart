@@ -23,7 +23,20 @@ class _HomePageState extends State<HomePage> {
   var isEmpty = true;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final controller = context.read<VisitorsService>();
+      final res = await controller.isEmptyList();
+      setState(() {
+        isEmpty = res;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print(isEmpty);
     final controller = context.watch<VisitorsService>();
     return Scaffold(
       body: SafeArea(
@@ -67,9 +80,6 @@ class _HomePageState extends State<HomePage> {
                     } else if (snapshot.hasData) {
                       final visitors = snapshot.data!;
 
-                      if (visitors.$1.isEmpty || visitors.$2) {
-                        isEmpty = true;
-                      }
                       if (visitors.$1.isEmpty) {
                         return Column(
                           children: [
@@ -90,7 +100,6 @@ class _HomePageState extends State<HomePage> {
                           ],
                         );
                       }
-                      isEmpty = false;
                       return Column(
                         children: [
                           Row(

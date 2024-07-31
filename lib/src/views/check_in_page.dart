@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:checkngo/src/utils/constants.dart';
 import 'package:checkngo/src/utils/custom_exception.dart';
@@ -122,6 +123,7 @@ class _CheckInPageState extends State<CheckInPage> {
     final validated = _formKey.currentState?.validate() ?? false;
     if (!validated) return;
 
+    final nav = Navigator.of(context);
     try {
       final service = context.read<VisitorsService>();
       AppDialogs.showNFCScan(context: context, title: 'Ready to Write');
@@ -131,6 +133,7 @@ class _CheckInPageState extends State<CheckInPage> {
         email: _emailController.text,
         visitReason: _visitReasonController.text,
       );
+
       if (!context.mounted) return;
       _popDialog(context);
       await AppDialogs.showSuccessDialog(
@@ -142,8 +145,15 @@ class _CheckInPageState extends State<CheckInPage> {
         onPressed: Navigator.of(context).pop,
       );
       if (!context.mounted) return;
-      Navigator.of(context)
-          .pushReplacementNamed('/tag-info', arguments: visitor);
+      Navigator.of(context).pushReplacementNamed(
+        '/tag-info',
+        arguments: {
+          'visitor': visitor,
+          'onPressed': (ctx) {
+            nav.pushReplacementNamed('/tab');
+          }
+        },
+      );
     } on CustomException catch (e) {
       if (!context.mounted) return;
       _popDialog(context);

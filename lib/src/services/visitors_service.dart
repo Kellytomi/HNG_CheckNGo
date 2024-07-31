@@ -92,6 +92,15 @@ class VisitorsService {
     return visitors;
   }
 
+  Future<bool> isEmptyList() async {
+    final visitors = await getActiveVisitors();
+
+    if (visitors.$1.isEmpty || visitors.$2) {
+      return true;
+    }
+    return false;
+  }
+
   Future<List<Visitor>> getVisitors(SortVisitorBy sort) async {
     final visitors = await dbService.getVisitors(sort);
     return visitors;

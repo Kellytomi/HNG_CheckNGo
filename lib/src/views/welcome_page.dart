@@ -1,3 +1,5 @@
+import 'package:checkngo/src/utils/colors.dart';
+import 'package:checkngo/src/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,49 +11,33 @@ class WelcomePage extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: commonPadding,
           child: Column(
             children: [
+              const SizedBox(height: 10.0),
               Expanded(
                 child: Column(
                   children: [
-                    Container(
-                      height: 400,
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(10.0),
-                      margin: const EdgeInsets.symmetric(vertical: 10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color.fromARGB(193, 201, 211, 233),
-                        image: const DecorationImage(
-                          image: AssetImage('assets/iPhone16.png'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
+                    Image.asset('assets/iphone.png'),
+                    const SizedBox(height: 50),
                     Text(
                       'Innovating checkout process. Helping businesses manage their visitors.',
                       textAlign: TextAlign.start,
                       maxLines: 3,
                       style: GoogleFonts.montserrat(
                         fontSize: 24.0,
-                        color: const Color.fromARGB(158, 0, 0, 0),
+                        color: kFontColor3,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
                 ),
               ),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacementNamed('/tab');
-                  },
-                  child: const Text('Get Started'),
-                ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed('/tab');
+                },
+                child: const Text('Get Started'),
               ),
             ],
           ),

@@ -9,6 +9,7 @@ import 'package:checkngo/src/views/tab_page.dart';
 import 'package:checkngo/src/views/tag_info_page.dart';
 import 'package:checkngo/src/views/visitor_details_page.dart';
 import 'package:checkngo/src/views/visitors_logs_page.dart';
+import 'package:checkngo/src/views/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -47,8 +48,8 @@ class MainApp extends StatelessWidget {
       ],
       child: MaterialApp(
         theme: AppTheme.lightTheme,
-        // home: const WelcomePage(),
-        home: const TabPage(),
+        home: const WelcomePage(),
+        // home: const TabPage(),
         routes: {
           '/tab': (_) => const TabPage(),
           '/create-visitor': (_) => const CheckInPage(),
