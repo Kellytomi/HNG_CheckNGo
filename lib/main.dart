@@ -1,3 +1,4 @@
+import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/models/visitor_cache_model.dart';
 import 'package:checkngo/src/services/db_service.dart';
 import 'package:checkngo/src/services/nfc_service.dart';
@@ -5,6 +6,7 @@ import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:checkngo/src/utils/app_theme.dart';
 import 'package:checkngo/src/views/check_in_page.dart';
 import 'package:checkngo/src/views/tab_page.dart';
+import 'package:checkngo/src/views/tag_info_page.dart';
 import 'package:checkngo/src/views/visitors_logs_page.dart';
 import 'package:checkngo/src/views/welcome_page.dart';
 import 'package:flutter/material.dart';
@@ -45,10 +47,16 @@ class MainApp extends StatelessWidget {
       ],
       child: MaterialApp(
         theme: AppTheme.lightTheme,
-        home: const WelcomePage(),
+        // home: const WelcomePage(),
+        home: const TabPage(),
         routes: {
           '/tab': (_) => const TabPage(),
+
           '/create-visitor': (_) => const CheckInPage(),
+          '/tag-info': (ctx) {
+          final visitor = ModalRoute.of(ctx)!.settings.arguments as Visitor;
+          return TagInfoPage(visitor: visitor);
+        },
           '/manage-visitor': (_) => const VisitorsLogsPage(),
         },
       ),

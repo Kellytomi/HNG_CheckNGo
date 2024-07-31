@@ -1,8 +1,10 @@
 import 'package:nfc_manager/nfc_manager.dart';
 
 class NFCService {
-  Future<void> writeTag(String data) async {
+  Future<bool> writeTag(String data) async {
+    var successful = false;
     try {
+      // NfcManager.instance.isAvailable();
       await NfcManager.instance.startSession(
         onDiscovered: (NfcTag tag) async {
           try {
@@ -14,16 +16,21 @@ class NFCService {
               NdefRecord.createText(data),
             ]);
             await ndef.write(message);
+            successful = true;
             await NfcManager.instance.stopSession();
           } catch (e) {
-            await NfcManager.instance.stopSession(errorMessage: "Failed to write tag");
-            throw e;
+            await NfcManager.instance
+                .stopSession(errorMessage: "Failed to write tag");
+            rethrow;
           }
         },
+        onError: (e) {
+          throw e;
+        },
       );
+      return successful;
     } catch (e) {
-      print("Error starting NFC session: $e");
-      throw e;
+      rethrow;
     }
   }
 
@@ -48,14 +55,14 @@ class NFCService {
           onRead(payload.substring(3));
           await NfcManager.instance.stopSession();
         } catch (e) {
-          await NfcManager.instance.stopSession(errorMessage: "Failed to read tag");
+          await NfcManager.instance
+              .stopSession(errorMessage: "Failed to read tag");
           onRead("Failed to read tag");
-          throw e;
+          rethrow;
         }
       });
     } catch (e) {
-      print("Error starting NFC session: $e");
-      throw e;
+      rethrow;
     }
   }
 }

@@ -18,6 +18,23 @@ class AppTheme {
           fontSize: 24.0,
         ),
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          elevation: WidgetStateProperty.all(0.0),
+          backgroundColor: WidgetStateProperty.all(Colors.transparent),
+          foregroundColor: WidgetStateProperty.all(kFontColor2),
+          minimumSize: WidgetStateProperty.all(
+            const Size(double.infinity, 48.52),
+          ),
+          textStyle: WidgetStateProperty.all(
+            GoogleFonts.inter(
+              fontSize: 16.05,
+              color: kFontColor2,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
           elevation: WidgetStateProperty.all(0.0),
@@ -25,7 +42,7 @@ class AppTheme {
           foregroundColor: WidgetStateProperty.all(kPrimaryColor),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
-              side: const BorderSide(color: kPrimaryColor, width: 2.0),
+              side: const BorderSide(color: kPrimaryColor, width: 1.0),
               borderRadius: BorderRadius.circular(32.0),
             ),
             // OutlinedBorder(

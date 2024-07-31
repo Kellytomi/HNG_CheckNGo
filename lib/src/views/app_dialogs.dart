@@ -1,3 +1,4 @@
+import 'package:checkngo/src/utils/colors.dart';
 import 'package:checkngo/src/views/nfc_scan_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -44,6 +45,9 @@ class AppDialogs {
 
   static Future<void> showSuccessDialog({
     required BuildContext context,
+    String buttonText = 'Proceed',
+    required String title,
+    required String description,
     required VoidCallback onPressed,
   }) {
     return showAlertDialog(
@@ -53,18 +57,20 @@ class AppDialogs {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'Completed',
-              style: GoogleFonts.montserrat(
-                  fontSize: 22.0,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600),
-            ),
+            const SizedBox(height: 16.0),
+            SvgPicture.asset('assets/saved.svg'),
             const SizedBox(height: 24.0),
-            SvgPicture.asset('assets/success.svg'),
-            const SizedBox(height: 26.0),
             Text(
-              'NFC tag reading has been completed. Click ‘Proceed’  to continue',
+              title,
+              style: GoogleFonts.montserrat(
+                fontSize: 22.0,
+                color: kGreenColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            Text(
+              description,
               style: GoogleFonts.montserrat(
                 fontSize: 16.0,
                 color: const Color(0xFF4B5563),
@@ -75,7 +81,7 @@ class AppDialogs {
             const SizedBox(height: 40.0),
             ElevatedButton(
               onPressed: onPressed,
-              child: Text('Proceed'),
+              child: Text(buttonText),
             ),
           ],
         ),
@@ -85,7 +91,9 @@ class AppDialogs {
 
   static Future<void> showErrorDialog({
     required BuildContext context,
+    required String message,
     required VoidCallback onPressed,
+    VoidCallback? onCancel,
   }) {
     return showAlertDialog(
       context,
@@ -94,18 +102,20 @@ class AppDialogs {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            const SizedBox(height: 16.0),
             Text(
               'Error',
               style: GoogleFonts.montserrat(
-                  fontSize: 22.0,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600),
+                fontSize: 22.0,
+                color: kRedColor,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 24.0),
             SvgPicture.asset('assets/error.svg'),
-            const SizedBox(height: 26.0),
+            const SizedBox(height: 16.0),
             Text(
-              'Device could not read NFC Tag',
+              message,
               style: GoogleFonts.montserrat(
                 fontSize: 16.0,
                 color: const Color(0xFF4B5563),
@@ -116,8 +126,13 @@ class AppDialogs {
             const SizedBox(height: 40.0),
             ElevatedButton(
               onPressed: onPressed,
-              child: Text('Try Again'),
+              child: const Text('Try Again'),
             ),
+            if (onCancel != null)
+              TextButton(
+                onPressed: onCancel,
+                child: const Text('Cancel'),
+              ),
           ],
         ),
       ),
@@ -126,10 +141,11 @@ class AppDialogs {
 
   static Future<void> showNFCScan({
     required BuildContext context,
+    required String title,
   }) {
     return showAlertDialog(
       context,
-      child: NfcScanContent(),
+      child: NfcScanContent(title: title),
     );
   }
 }

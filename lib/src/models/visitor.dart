@@ -27,6 +27,8 @@ class Visitor {
     return VisitorStatus.checkOut;
   }
 
+  bool get isCheckedOut => checkedOutAt != null;
+
   Visitor copyWith({
     String? fullname,
     String? phone,

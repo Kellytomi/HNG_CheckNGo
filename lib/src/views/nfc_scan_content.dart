@@ -1,27 +1,35 @@
+import 'package:checkngo/src/models/visitor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 class NfcScanContent extends StatelessWidget {
-  const NfcScanContent({super.key});
+  const NfcScanContent({super.key, required this.title});
+  final String title;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 40.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            'Ready to read',
+            title,
             style: GoogleFonts.montserrat(
                 fontSize: 22.0,
                 color: Colors.black,
                 fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 48.0),
-          SvgPicture.asset('assets/scan.svg'),
-          const SizedBox(height: 24.0),
+          const SizedBox(height: 30.16),
+          // SvgPicture.asset('assets/scan.svg'),
+          Lottie.asset(
+            'assets/animations/nfc.json',
+            height: 120.0,
+            width: 120.0,
+          ),
+          const SizedBox(height: 24.08),
           Text(
             'Please bring an NFC Tag close to device',
             style: GoogleFonts.montserrat(

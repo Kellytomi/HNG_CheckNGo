@@ -8,7 +8,7 @@ class VisitorsService {
 
   const VisitorsService({required this.nfcService, required this.dbService});
 
-  Future<void> checkIn({
+  Future<Visitor> checkIn({
     required String name,
     required String phone,
     String email = '',
@@ -24,12 +24,16 @@ class VisitorsService {
 
     try {
       // Write to the NFC tag and ensure this process completes before proceeding
-      await nfcService.writeTag(phone);
+      final isSuccessful = await nfcService.writeTag(phone);
       // Only after successful NFC write, save the visitor data to the local DB
+      // Future.value()
+      if (!isSuccessful) {
+        await checkIn(name: name, phone: phone, email: email, visitReason: visitReason);
+      }
       await dbService.save(visitor);
+      return visitor;
     } catch (e) {
-      print('Error during check-in: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -74,8 +78,7 @@ class VisitorsService {
 
       await dbService.save(visitor.copyWith(checkedOutAt: DateTime.now()));
     } catch (e) {
-      print('Error during check-out: $e');
-      throw e;
+      rethrow;
     }
   }
 
