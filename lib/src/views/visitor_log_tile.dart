@@ -28,7 +28,7 @@ class VisitorLogTile extends StatelessWidget {
           boxShadow: const [
             BoxShadow(
               color: Color.fromRGBO(107, 110, 113, 0.33),
-              offset: Offset(0, 0),
+              offset: Offset(0.5, 0.5),
               blurRadius: 2.01,
               spreadRadius: 0,
             ),

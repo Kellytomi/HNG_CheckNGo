@@ -23,9 +23,7 @@ class _VisitorsLogsPageState extends State<VisitorsLogsPage> {
     final controller = context.watch<VisitorsService>();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         title: const Text('Visitor\'s Logs'),
         centerTitle: false,
         actions: [
