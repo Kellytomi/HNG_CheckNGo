@@ -1,16 +1,22 @@
+import 'package:checkngo/src/utils/custom_exception.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
 class NFCService {
-  Future<bool> writeTag(String data) async {
+  Future<void> writeTag(String data) async {
+    final isAvailable = await NfcManager.instance.isAvailable();
+    if (!isAvailable) {
+      throw CustomException(
+          'Trouble detecting the NFC service. Make sure this device is NFC enabled, or go to device settings and turn NFC on if it is.');
+    }
+
     var successful = false;
     try {
-      // NfcManager.instance.isAvailable();
       await NfcManager.instance.startSession(
         onDiscovered: (NfcTag tag) async {
           try {
             var ndef = Ndef.from(tag);
             if (ndef == null) {
-              throw "Tag is not NDEF formatted";
+              throw CustomException('Tnot NDEF formatted');
             }
             var message = NdefMessage([
               NdefRecord.createText(data),
@@ -28,7 +34,9 @@ class NFCService {
           throw e;
         },
       );
-      return successful;
+      if (!successful) {
+        await writeTag(data);
+      }
     } catch (e) {
       rethrow;
     }

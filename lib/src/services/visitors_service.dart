@@ -1,6 +1,7 @@
 import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/services/db_service.dart';
 import 'package:checkngo/src/services/nfc_service.dart';
+import 'package:checkngo/src/utils/custom_exception.dart';
 
 class VisitorsService {
   final NFCService nfcService;
@@ -24,12 +25,8 @@ class VisitorsService {
 
     try {
       // Write to the NFC tag and ensure this process completes before proceeding
-      final isSuccessful = await nfcService.writeTag(phone);
+      await nfcService.writeTag(phone);
       // Only after successful NFC write, save the visitor data to the local DB
-      // Future.value()
-      if (!isSuccessful) {
-        await checkIn(name: name, phone: phone, email: email, visitReason: visitReason);
-      }
       await dbService.save(visitor);
       return visitor;
     } catch (e) {
@@ -67,13 +64,13 @@ class VisitorsService {
 
       // Ensure phone is not null
       if (phone == null || phone!.isEmpty) {
-        throw Exception('Failed to read NFC tag.');
+        throw CustomException('Failed to read NFC tag.');
       }
 
       // What happens when a checked-out tag is scanned again to check-out?
       final visitor = await dbService.getVisitor(phone!);
       if (visitor.checkedOutAt != null) {
-        throw Exception('Visitor already checked out');
+        throw CustomException('Visitor already checked out');
       }
 
       await dbService.save(visitor.copyWith(checkedOutAt: DateTime.now()));

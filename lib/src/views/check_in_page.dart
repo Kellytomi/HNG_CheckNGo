@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:checkngo/src/utils/constants.dart';
+import 'package:checkngo/src/utils/custom_exception.dart';
 import 'package:checkngo/src/utils/string_extensions.dart';
 import 'package:checkngo/src/views/app_dialogs.dart';
 import 'package:checkngo/src/views/custom_textfield.dart';
@@ -23,7 +24,6 @@ class _CheckInPageState extends State<CheckInPage> {
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
   late TextEditingController _visitReasonController;
-
 
   @override
   void initState() {
@@ -142,10 +142,10 @@ class _CheckInPageState extends State<CheckInPage> {
         onPressed: Navigator.of(context).pop,
       );
       if (!context.mounted) return;
-      Navigator.of(context).pushReplacementNamed('/tag-info',arguments: visitor);
+      Navigator.of(context)
+          .pushReplacementNamed('/tag-info', arguments: visitor);
 
-      // if (!context.mounted) return;
-    } on PlatformException catch (e) {
+    } on CustomException catch (e) {
       if (!context.mounted) return;
       _popDialog(context);
       await _displayErrorDialog(context: context, message: e.message);
