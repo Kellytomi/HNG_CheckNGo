@@ -174,24 +174,38 @@ class DBService {
   }
 
   Future<void> saveCsvFile(List<Visitor> visitors) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/visitors-logs.csv';
-    final file = File(path);
-
-    await file.writeAsString(toCSV(visitors));
+    // final directory = await getApplicationDocumentsDirectory();
+    // final path = '${directory.path}/visitors-logs.csv';
+    // final file = File(path);
+    //
+    // final saved = await file.writeAsString(toCSV(visitors));
+    // print('=======================');
+    // print(saved);
+    // print('=======================');
   }
 
   Future<void> saveJsonFile(List<Visitor> visitors) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/visitors-logs.json';
-    final file = File(path);
-
-    final list = [];
-    for (final visitor in visitors) {
-      list.add(visitor.toMap());
-    }
-    await file.writeAsString(json.encode(list));
+    // final directory = await getApplicationDocumentsDirectory();
+    // final path = '${directory.path}/visitors-logs.json';
+    // final file = File(path);
+    //
+    // final list = [];
+    // for (final visitor in visitors) {
+    //   list.add(visitor.toMap());
+    // }
+    // final saved = await file.writeAsString(json.encode(list));
+    // print('=======================');
+    // print(saved);
+    // print('=======================');
   }
+
+  // Future<void> requestStoragePermission() async {
+  //   if (await Permission.storage.request().isGranted) {
+  //     // Permission granted
+  //   } else {
+  //     // Handle the case where the user denies the permission
+  //   }
+  // }
 }
 
 enum SortVisitorBy { checkedIn, checkedOut }

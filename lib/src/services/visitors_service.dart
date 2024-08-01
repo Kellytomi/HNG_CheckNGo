@@ -38,6 +38,9 @@ class VisitorsService {
           'Trouble detecting an NFC tag. Bring tag close to device',
         );
       }
+      if (nfcService.message.toLowerCase().contains('oops')) {
+        throw CustomException(nfcService.message);
+      }
 
       await dbService.save(visitor);
       return visitor;
@@ -125,5 +128,9 @@ class VisitorsService {
 
   Future<void> saveAsCSV(List<Visitor> visitors) {
     return dbService.saveCsvFile(visitors);
+  }
+
+  Future<void> saveAsJSON(List<Visitor> visitors) {
+    return dbService.saveJsonFile(visitors);
   }
 }
