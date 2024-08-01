@@ -5,6 +5,7 @@ import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/models/visitor_cache_model.dart';
 import 'package:checkngo/src/utils/custom_exception.dart';
 import 'package:csv/csv.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -173,15 +174,34 @@ class DBService {
     return const ListToCsvConverter().convert(csvData);
   }
 
+  Future<void> getFilePath(String fileName) async {
+    String? path = await FilePicker.platform.saveFile(
+      dialogTitle: 'Please select an output file:',
+      fileName:fileName,
+      allowedExtensions: ['json', 'csv'],
+    );
+
+    if (path == null) {
+      // User canceled the picker
+      print('=======================');
+      print('failed');
+      print('=======================');
+      return;
+    }
+    print('=======================');
+    print(path);
+    print('=======================');
+  }
+
   Future<void> saveCsvFile(List<Visitor> visitors) async {
-    // final directory = await getApplicationDocumentsDirectory();
-    // final path = '${directory.path}/visitors-logs.csv';
-    // final file = File(path);
-    //
-    // final saved = await file.writeAsString(toCSV(visitors));
-    // print('=======================');
-    // print(saved);
-    // print('=======================');
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/visitors-logs.csv';
+    final file = File(path);
+
+    final saved = await file.writeAsString(toCSV(visitors));
+    print('=======================');
+    print(saved);
+    print('=======================');
   }
 
   Future<void> saveJsonFile(List<Visitor> visitors) async {
@@ -209,3 +229,5 @@ class DBService {
 }
 
 enum SortVisitorBy { checkedIn, checkedOut }
+
+enum FileSaveType { csv, json }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:checkngo/src/utils/colors.dart';
@@ -5,6 +7,7 @@ import 'package:checkngo/src/utils/constants.dart';
 import 'package:checkngo/src/views/empty_state_content.dart';
 import 'package:checkngo/src/views/visitor_log_sort_switcher.dart';
 import 'package:checkngo/src/views/visitor_log_tile.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,6 +35,26 @@ class _VisitorsLogsPageState extends State<VisitorsLogsPage> {
       _visitors.addAll(list);
       setState(() {});
     });
+  }
+
+  Future<void> aaa() async {
+    String? outputFile = await FilePicker.platform.saveFile(
+      dialogTitle: 'Please select an output file:',
+      fileName: 'output-file.pdf',
+      allowedExtensions: ['json', 'csv'],
+      type: FileType.any,
+      // bytes: file.readAsBytesSync(),
+    );
+
+    if (outputFile == null) {
+      // User canceled the picker
+      print('=======================');
+      print('failed');
+      print('=======================');
+    }
+    print('=======================');
+    print(outputFile);
+    print('=======================');
   }
 
   @override
@@ -65,7 +88,8 @@ class _VisitorsLogsPageState extends State<VisitorsLogsPage> {
                     onTap: () async {
                       final controller = context.read<VisitorsService>();
                       print(_visitors);
-                      controller.saveAsCSV(_visitors);
+                      await controller.saveAsCSV(_visitors);
+                      aaa();
                     },
                     child: Row(
                       children: [
@@ -87,6 +111,7 @@ class _VisitorsLogsPageState extends State<VisitorsLogsPage> {
                       final controller = context.read<VisitorsService>();
                       print(_visitors);
                       controller.saveAsJSON(_visitors);
+                      aaa();
                     },
                     child: Row(
                       children: [
