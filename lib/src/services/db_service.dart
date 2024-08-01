@@ -6,6 +6,7 @@ import 'package:checkngo/src/models/visitor_cache_model.dart';
 import 'package:checkngo/src/utils/custom_exception.dart';
 import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -174,58 +175,40 @@ class DBService {
     return const ListToCsvConverter().convert(csvData);
   }
 
-  Future<void> getFilePath(String fileName) async {
-    String? path = await FilePicker.platform.saveFile(
-      dialogTitle: 'Please select an output file:',
-      fileName:fileName,
-      allowedExtensions: ['json', 'csv'],
-    );
-
-    if (path == null) {
-      // User canceled the picker
-      print('=======================');
-      print('failed');
-      print('=======================');
-      return;
-    }
-    print('=======================');
-    print(path);
-    print('=======================');
+  Future<String?> getFilePath() async {
+    await FilePicker.platform.clearTemporaryFiles();
+    String? path = await FilePicker.platform.getDirectoryPath();
+    return path;
   }
 
-  Future<void> saveCsvFile(List<Visitor> visitors) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/visitors-logs.csv';
+  Future<String?> saveCsvFile(List<Visitor> visitors) async {
+    final directoryPath = await getFilePath();
+    if (directoryPath == null) return null;
+
+    final timestamp = DateTime.now().toIso8601String();
+    final path = '$directoryPath/visitors_logs-$timestamp.csv';
+
+    final file = File(path);
+    final f = await file.writeAsString(toCSV(visitors));
+    return f.path;
+  }
+
+  Future<String?> saveJsonFile(List<Visitor> visitors) async {
+    final directoryPath = await getFilePath();
+    if (directoryPath == null) return null;
+    final timestamp = DateTime.now().toIso8601String();
+
+    final path = '$directoryPath/visitors_logs-$timestamp.json';
     final file = File(path);
 
-    final saved = await file.writeAsString(toCSV(visitors));
-    print('=======================');
-    print(saved);
-    print('=======================');
-  }
+    final list = [];
+    for (final visitor in visitors) {
+      list.add(visitor.toMap());
+    }
 
-  Future<void> saveJsonFile(List<Visitor> visitors) async {
-    // final directory = await getApplicationDocumentsDirectory();
-    // final path = '${directory.path}/visitors-logs.json';
-    // final file = File(path);
-    //
-    // final list = [];
-    // for (final visitor in visitors) {
-    //   list.add(visitor.toMap());
-    // }
-    // final saved = await file.writeAsString(json.encode(list));
-    // print('=======================');
-    // print(saved);
-    // print('=======================');
+    final f = await file.writeAsString(json.encode(list));
+    return f.path;
   }
-
-  // Future<void> requestStoragePermission() async {
-  //   if (await Permission.storage.request().isGranted) {
-  //     // Permission granted
-  //   } else {
-  //     // Handle the case where the user denies the permission
-  //   }
-  // }
 }
 
 enum SortVisitorBy { checkedIn, checkedOut }

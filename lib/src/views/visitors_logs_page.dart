@@ -4,6 +4,7 @@ import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:checkngo/src/utils/colors.dart';
 import 'package:checkngo/src/utils/constants.dart';
+import 'package:checkngo/src/views/app_dialogs.dart';
 import 'package:checkngo/src/views/empty_state_content.dart';
 import 'package:checkngo/src/views/visitor_log_sort_switcher.dart';
 import 'package:checkngo/src/views/visitor_log_tile.dart';
@@ -37,26 +38,6 @@ class _VisitorsLogsPageState extends State<VisitorsLogsPage> {
     });
   }
 
-  Future<void> aaa() async {
-    String? outputFile = await FilePicker.platform.saveFile(
-      dialogTitle: 'Please select an output file:',
-      fileName: 'output-file.pdf',
-      allowedExtensions: ['json', 'csv'],
-      type: FileType.any,
-      // bytes: file.readAsBytesSync(),
-    );
-
-    if (outputFile == null) {
-      // User canceled the picker
-      print('=======================');
-      print('failed');
-      print('=======================');
-    }
-    print('=======================');
-    print(outputFile);
-    print('=======================');
-  }
-
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<VisitorsService>();
@@ -85,12 +66,7 @@ class _VisitorsLogsPageState extends State<VisitorsLogsPage> {
                     ),
                   ),
                   PopupMenuItem(
-                    onTap: () async {
-                      final controller = context.read<VisitorsService>();
-                      print(_visitors);
-                      await controller.saveAsCSV(_visitors);
-                      aaa();
-                    },
+                    onTap: () => _save(FileSaveType.csv),
                     child: Row(
                       children: [
                         Text(
@@ -107,12 +83,7 @@ class _VisitorsLogsPageState extends State<VisitorsLogsPage> {
                     ),
                   ),
                   PopupMenuItem(
-                    onTap: () async {
-                      final controller = context.read<VisitorsService>();
-                      print(_visitors);
-                      controller.saveAsJSON(_visitors);
-                      aaa();
-                    },
+                    onTap: () => _save(FileSaveType.json),
                     child: Row(
                       children: [
                         Text(
@@ -141,62 +112,93 @@ class _VisitorsLogsPageState extends State<VisitorsLogsPage> {
               onSwitch: (s) => setState(() => sort = s),
             ),
             const SizedBox(height: 10.0),
-            Expanded(
-              child: SizedBox(
-                child: FutureBuilder<List<Visitor>>(
-                  future: controller.getVisitors(sort),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return const EmptyStateContent(
-                        text: 'An error occured while fetching log!',
-                      );
-                    } else if (snapshot.hasData) {
-                      final visitors = snapshot.data!;
-                      if (sort == SortVisitorBy.checkedOut &&
-                          visitors.every((v) => v.checkedOutAt == null)) {
-                        return const EmptyStateContent(
-                          text:
-                              'There are currently no check out entries in your log history.',
-                        );
-                      }
-                      if (visitors.isEmpty) {
-                        return const EmptyStateContent(
-                          text:
-                              'There are currently no entries in your log history. Start checking visitors in by writing to NFC tags.',
-                        );
-                      }
-                      return Expanded(
-                        child: ListView.builder(
-                          itemCount: visitors.length,
-                          itemBuilder: (context, index) {
-                            final visitor = visitors[index];
-                            return VisitorLogTile(
-                              sort: sort,
-                              visitor: visitor,
-                              onTap: () {
-                                Navigator.of(context).pushNamed(
-                                  '/visitor-details',
-                                  arguments: visitor,
-                                );
-                              },
+            FutureBuilder<List<Visitor>>(
+              future: controller.getVisitors(sort),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return const EmptyStateContent(
+                    text: 'An error occured while fetching log!',
+                  );
+                } else if (snapshot.hasData) {
+                  final visitors = snapshot.data!;
+                  if (sort == SortVisitorBy.checkedOut &&
+                      visitors.every((v) => v.checkedOutAt == null)) {
+                    return const Expanded(
+                      child: EmptyStateContent(
+                        text:
+                            'There are currently no check out entries in your log history.',
+                      ),
+                    );
+                  }
+                  if (visitors.isEmpty) {
+                    return const Expanded(
+                      child: EmptyStateContent(
+                        text:
+                            'There are currently no entries in your log history. Start checking visitors in by writing to NFC tags.',
+                      ),
+                    );
+                  }
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: visitors.length,
+                      itemBuilder: (context, index) {
+                        final visitor = visitors[index];
+                        return VisitorLogTile(
+                          sort: sort,
+                          visitor: visitor,
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                              '/visitor-details',
+                              arguments: visitor,
                             );
                           },
-                        ),
-                      );
-                    } else {
-                      return const SizedBox();
-                    }
-                  },
-                ),
-              ),
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _save(FileSaveType type) async {
+    try {
+      final service = context.read<DBService>();
+      String? path;
+      if (type == FileSaveType.csv) {
+        path = await service.saveCsvFile(_visitors);
+      } else {
+        path = await service.saveJsonFile(_visitors);
+      }
+      if (path == null) return;
+      if (!mounted) return;
+      await AppDialogs.showSuccessDialog(
+        context: context,
+        showCTA: false,
+        title: 'Saved',
+        description: 'Visitors logs saved successfully at:\n\n"$path"',
+      );
+    } on PathAccessException catch (e) {
+      final message =
+          '${e.osError?.message ?? ''}. Cannot use path:\n\n"${e.path}".';
+      if (!mounted) return;
+      await AppDialogs.showErrorDialog(
+        context: context,
+        message: message,
+        showCTA: false,
+      );
+    } catch (_) {}
   }
 }

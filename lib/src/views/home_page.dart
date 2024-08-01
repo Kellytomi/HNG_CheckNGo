@@ -242,7 +242,7 @@ class _HomePageState extends State<HomePage> {
                 description: '${visitor.fullname} has been checked out.',
                 onPressed: () {
                   _popDialog(ctx);
-                  nav.pushReplacementNamed('/tab');
+                  Navigator.of(ctx).pushReplacementNamed('/tab');
                 },
               );
             } on CustomException catch (e) {
@@ -253,11 +253,11 @@ class _HomePageState extends State<HomePage> {
                 message: e.message,
                 onPressed: () {
                   _popDialog(ctx);
-                  nav.pushReplacementNamed('/tab');
+                  Navigator.of(ctx).pushReplacementNamed('/tab');
                 },
                 onCancel: () {
                   _popDialog(ctx);
-                  nav.pushReplacementNamed('/tab');
+                  Navigator.of(ctx).pushReplacementNamed('/tab');
                 },
               );
             } catch (_) {}

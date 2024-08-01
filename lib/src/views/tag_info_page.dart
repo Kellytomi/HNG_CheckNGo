@@ -92,7 +92,7 @@ class TagInfoPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 63.0),
+                const SizedBox(height: 23.0),
                 ElevatedButton(
                   onPressed: () => onPressed?.call(context),
                   child: Text(buttonText ?? 'Back to home'),

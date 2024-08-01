@@ -54,7 +54,10 @@ class NFCService {
     if (nfcData.containsKey('ndef')) {
       List<int> payload =
           nfcData['ndef']['cachedMessage']?['records']?[0]['payload'];
-      decodedText = String.fromCharCodes(payload);
+        // The first byte indicates the language code length
+      final languageCodeLength = payload[0];
+        // The text starts after the language code
+        decodedText = String.fromCharCodes(payload.sublist(languageCodeLength + 1));
     }
 
     _message = decodedText ?? 'Oops. No data found on this NFC';

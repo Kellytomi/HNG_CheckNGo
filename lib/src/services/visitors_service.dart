@@ -49,22 +49,6 @@ class VisitorsService {
     }
   }
 
-  // What happens when a checked-out tag is scanned again to check-out?
-  // Ideally, it should show an option to the user asking if
-  // // they want to check the visitor in again.
-  // Future<void> recheckIn(String phone) async {
-  //   try {
-  //     final visitor = await dbService.getVisitor(phone);
-  //     final newEntry = visitor.copyWith(
-  //       checkedInAt: DateTime.now(),
-  //       checkedOutAt: null,
-  //     );
-  //     await dbService.save(newEntry);
-  //   } catch (_) {
-  //     rethrow;
-  //   }
-  // }
-
   Future<Visitor> readNFC() async {
     // Get the visitor by reading from the NFC tag, set the checkedOutAt time
     try {
@@ -124,13 +108,5 @@ class VisitorsService {
   Future<List<Visitor>> getVisitors(SortVisitorBy sort) async {
     final visitors = await dbService.getVisitors(sort);
     return visitors;
-  }
-
-  Future<void> saveAsCSV(List<Visitor> visitors) {
-    return dbService.saveCsvFile(visitors);
-  }
-
-  Future<void> saveAsJSON(List<Visitor> visitors) {
-    return dbService.saveJsonFile(visitors);
   }
 }

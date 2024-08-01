@@ -32,7 +32,7 @@ class VisitorDetailsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 11.14),
                 Text(
-                  'Status: Checked ${visitor.status.name}',
+                  'Current Status: Checked ${visitor.status.name}',
                   style: GoogleFonts.montserrat(
                     fontSize: 16.05,
                     color: visitor.status.color,
