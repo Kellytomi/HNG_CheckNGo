@@ -4,10 +4,6 @@
 
 https://github.com/user-attachments/assets/458a173c-e9cf-4dc5-9ec5-3966bc27117c
 
-![Simulator Screenshot - iPhone 15 Pro - 2024-08-01 at 01 23 09](https://github.com/user-attachments/assets/551c975a-50fc-4925-9fd9-a3aff7849bcf)
-![Simulator Screenshot - iPhone 15 Pro - 2024-08-01 at 01 23 12](https://github.com/user-attachments/assets/1c5cac7a-421f-46dd-be72-330bf2741a80)
-
-
 
 ## Project Overview
 Product Name: Check n' Go
