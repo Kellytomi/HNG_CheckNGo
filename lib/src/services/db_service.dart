@@ -119,8 +119,10 @@ class DBService {
   }
 
   Future<Visitor> getVisitor(String phone) async {
+  print(phone);
+  print('= = = = = = + + _');
     final found =
-        await isar.visitorCacheModels.filter().phoneEqualTo(phone).findFirst();
+        await isar.visitorCacheModels.filter().phoneContains(phone).findFirst();
     if (found == null) {
       throw CustomException(
           'Could not find the visitor with the given phone number');

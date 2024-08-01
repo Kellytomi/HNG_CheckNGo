@@ -54,7 +54,13 @@ class NFCService {
     if (nfcData.containsKey('ndef')) {
       List<int> payload =
           nfcData['ndef']['cachedMessage']?['records']?[0]['payload'];
-      decodedText = String.fromCharCodes(payload);
+      
+      if (payload != null && payload.isNotEmpty) {
+        // The first byte indicates the language code length
+        int languageCodeLength = payload[0];
+        // The text starts after the language code
+        decodedText = String.fromCharCodes(payload.sublist(languageCodeLength + 1));
+      }
     }
 
     _message = decodedText ?? 'Oops. No data found on this NFC';
@@ -64,7 +70,7 @@ class NFCService {
     required NfcTag nfcTag,
     required String data,
   }) async {
-    NdefMessage message = NdefMessage([NdefRecord.createText(data)]);
+    NdefMessage message = NdefMessage([NdefRecord.createText(data, languageCode: '')]);
     await Ndef.from(nfcTag)?.write(message);
   }
 }
