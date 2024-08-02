@@ -47,8 +47,9 @@ class AppDialogs {
     required BuildContext context,
     String buttonText = 'Proceed',
     required String title,
+    bool showCTA = true,
     required String description,
-    required VoidCallback onPressed,
+    VoidCallback? onPressed,
   }) {
     return showAlertDialog(
       context,
@@ -78,11 +79,13 @@ class AppDialogs {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 40.0),
-            ElevatedButton(
-              onPressed: onPressed,
-              child: Text(buttonText),
-            ),
+            if (showCTA) ...[
+              const SizedBox(height: 40.0),
+              ElevatedButton(
+                onPressed: onPressed,
+                child: Text(buttonText),
+              ),
+            ],
           ],
         ),
       ),
@@ -92,7 +95,8 @@ class AppDialogs {
   static Future<void> showErrorDialog({
     required BuildContext context,
     required String message,
-    required VoidCallback onPressed,
+    VoidCallback? onPressed,
+    bool showCTA = true,
     VoidCallback? onCancel,
   }) {
     return showAlertDialog(
@@ -123,11 +127,13 @@ class AppDialogs {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 40.0),
-            ElevatedButton(
-              onPressed: onPressed,
-              child: const Text('Try Again'),
-            ),
+            if (showCTA) ...[
+              const SizedBox(height: 40.0),
+              ElevatedButton(
+                onPressed: onPressed,
+                child: const Text('Try Again'),
+              ),
+            ],
             if (onCancel != null)
               TextButton(
                 onPressed: onCancel,

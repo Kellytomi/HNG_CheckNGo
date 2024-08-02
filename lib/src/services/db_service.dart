@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/models/visitor_cache_model.dart';
 import 'package:checkngo/src/utils/custom_exception.dart';
 import 'package:csv/csv.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -172,13 +175,42 @@ class DBService {
     return const ListToCsvConverter().convert(csvData);
   }
 
-  Future<void> saveCsvFile(List<Visitor> visitors) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/visitors-logs.csv';
+  Future<String?> getFilePath() async {
+    await FilePicker.platform.clearTemporaryFiles();
+    String? path = await FilePicker.platform.getDirectoryPath();
+    return path;
+  }
+
+  Future<String?> saveCsvFile(List<Visitor> visitors) async {
+    final directoryPath = await getFilePath();
+    if (directoryPath == null) return null;
+
+    final timestamp = DateTime.now().toIso8601String();
+    final path = '$directoryPath/visitors_logs-$timestamp.csv';
+
+    final file = File(path);
+    final f = await file.writeAsString(toCSV(visitors));
+    return f.path;
+  }
+
+  Future<String?> saveJsonFile(List<Visitor> visitors) async {
+    final directoryPath = await getFilePath();
+    if (directoryPath == null) return null;
+    final timestamp = DateTime.now().toIso8601String();
+
+    final path = '$directoryPath/visitors_logs-$timestamp.json';
     final file = File(path);
 
-    await file.writeAsString(toCSV(visitors));
+    final list = [];
+    for (final visitor in visitors) {
+      list.add(visitor.toMap());
+    }
+
+    final f = await file.writeAsString(json.encode(list));
+    return f.path;
   }
 }
 
 enum SortVisitorBy { checkedIn, checkedOut }
+
+enum FileSaveType { csv, json }

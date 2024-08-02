@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:checkngo/src/models/visitor.dart';
 import 'package:checkngo/src/services/visitors_service.dart';
 import 'package:checkngo/src/utils/constants.dart';
 import 'package:checkngo/src/utils/custom_exception.dart';

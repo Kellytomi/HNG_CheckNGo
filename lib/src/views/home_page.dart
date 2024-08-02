@@ -7,6 +7,7 @@ import 'package:checkngo/src/utils/custom_exception.dart';
 import 'package:checkngo/src/views/empty_state_content.dart';
 import 'package:checkngo/src/views/visitor_log_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +37,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(isEmpty);
     final controller = context.watch<VisitorsService>();
     return Scaffold(
       body: SafeArea(
@@ -186,6 +186,8 @@ class _HomePageState extends State<HomePage> {
           ? null
           : FloatingActionButton.extended(
               backgroundColor: kPrimaryColor,
+              extendedPadding:
+                  const EdgeInsets.symmetric(vertical: 19.5, horizontal: 15.0),
               onPressed: () => _read(context),
               label: Row(
                 children: [
@@ -196,8 +198,16 @@ class _HomePageState extends State<HomePage> {
                         fontSize: 14,
                         fontWeight: FontWeight.w500),
                   ),
-                  const SizedBox(width: 4),
-                  const Icon(Icons.nfc),
+                  const SizedBox(width: 8),
+                  SvgPicture.asset(
+                    'assets/nfc_tag_icon.svg',
+                    height: 16.0,
+                    width: 16.0,
+                    colorFilter: const ColorFilter.mode(
+                      kBGColor,
+                      BlendMode.srcIn,
+                    ),
+                  )
                 ],
               ),
             ),
@@ -232,7 +242,7 @@ class _HomePageState extends State<HomePage> {
                 description: '${visitor.fullname} has been checked out.',
                 onPressed: () {
                   _popDialog(ctx);
-                  nav.pushReplacementNamed('/tab');
+                  Navigator.of(ctx).pushReplacementNamed('/tab');
                 },
               );
             } on CustomException catch (e) {
@@ -243,11 +253,11 @@ class _HomePageState extends State<HomePage> {
                 message: e.message,
                 onPressed: () {
                   _popDialog(ctx);
-                  nav.pushReplacementNamed('/tab');
+                  Navigator.of(ctx).pushReplacementNamed('/tab');
                 },
                 onCancel: () {
                   _popDialog(ctx);
-                  nav.pushReplacementNamed('/tab');
+                  Navigator.of(ctx).pushReplacementNamed('/tab');
                 },
               );
             } catch (_) {}
